@@ -106,8 +106,11 @@ function ChangeFont() {
 }
 ```
 
+API:
+`useDocumentExecCommand(commandName)`
+
 Arguments:
-1) `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that want to call.
+- `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that want to call.
 
 Return value:
 An object with the following properties:

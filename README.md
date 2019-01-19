@@ -114,6 +114,7 @@ Arguments:
 - `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that want to call.
 
 Return value:
+
 An object with the following properties:
 - `performCommand`: a function that calls document.execCommand for you. You should call this when you want to change the selected text.
 - `performCommandWithValue`: a function that calls document.execCommand with a [value](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Parameters).
@@ -157,6 +158,7 @@ Arguments:
 - `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that want to check the status of.
 
 Return value:
+
 An object with the following properties:
 - `isActive`: A boolean that indicates whether the currently selected text is active for the specified "command". This is done with [`document.queryCommandState(commandName)`](https://developer.mozilla.org/en-US/docs/Web/API/Document/queryCommandState).
 - `activeValue`: A string that tells you what the active value is for the specified "command". For example, this can tell you the font family of the currently selected text.

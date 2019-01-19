@@ -7,7 +7,7 @@
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "babel src --out-dir lib --source-maps"
+    "build": "rimraf lib && babel src --out-dir lib"
   },
   "browserslist": [
     "extends browserslist-config-canopy"
@@ -23,6 +23,7 @@
     "@babel/preset-react": "^7.0.0",
     "browserslist-config-canopy": "^2.0.0",
     "react": "16.8.0-alpha.1",
-    "react-dom": "16.8.0-alpha.1"
+    "react-dom": "16.8.0-alpha.1",
+    "rimraf": "^2.6.3"
   }
 }

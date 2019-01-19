@@ -64,8 +64,8 @@ bandicoot did not render the button itself, but just provided a `performCommand`
 use on a button that we render on our own. This allows us to position and style the Bold button however we'd like to, without having
 to worry about the DOM interactions for bolding/unbolding.
 
-This way of using [React hooks](https://reactjs.org/docs/hooks-intro.html) is the pattern that bandicoot uses whenever you need to implement a new
-"control button". Italics, underlining, font size, links, and images can all be achieved by importing a bandicoot hook and using the hook inside of
+This use of [React hooks](https://reactjs.org/docs/hooks-intro.html) is the pattern that bandicoot employs whenever you need to implement a new
+"control button". Italics, underlining, font size, links, images, and read-only elements can all be achieved by importing a bandicoot hook and using the hook inside of
 your component.
 
 All of bandicoot's hooks are optional to use and can be composed to create a wide variety of rich text features. The hooks are meant to hide the ugly
@@ -110,7 +110,7 @@ function FontFamily() {
 `useDocumentExecCommand(commandName)`
 
 #### Arguments
-- `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that want to call.
+- `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that you want to call.
 
 #### Return value
 An object with the following properties:
@@ -123,7 +123,7 @@ Additionally, you can detect what the current value is (e.g., font family is "Ar
 
 The `useDocumentQueryCommandState` hook provides the logic for doing so without you having to deal with the DOM or [selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection).
 
-To see a list of rich text features that you can use this with, check out [this MDN documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands)
+To see a list of rich text features that you can use this with, check out [this MDN documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands).
 
 #### Basic usage
 ```jsx
@@ -152,7 +152,7 @@ function FontFamily() {
 `useDocumentQueryCommandState(commandName)`
 
 #### Arguments
-- `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that want to check the status of.
+- `commandName` (required): The [document command](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#Commands) that you want to check the status of.
 
 #### Return value
 An object with the following properties:

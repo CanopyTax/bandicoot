@@ -26,7 +26,6 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
     },
 
     removeImage(imgElement) {
-      setShowingPopup(null)
       const range = document.createRange()
       range.selectNode(imgElement)
       const selection = window.getSelection()

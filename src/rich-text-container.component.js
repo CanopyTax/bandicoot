@@ -6,6 +6,7 @@ export function RichTextContainer(props) {
 
   const selectionChangedListenersRef = useRef([])
   const blurListenersRef = useRef([])
+  const newHTMLListenersRef = useRef([])
 
   contextValue.addSelectionChangedListener = listener => {
     selectionChangedListenersRef.current.push(listener)
@@ -24,6 +25,15 @@ export function RichTextContainer(props) {
   }
   contextValue.fireBlur = () => {
     blurListenersRef.current.forEach(listener => listener())
+  }
+  contextValue.addNewHTMLListener = listener => {
+    newHTMLListenersRef.current.push(listener)
+  }
+  contextValue.removeNewHTMLListener = listener => {
+    newHTMLListenersRef.current = newHTMLListenersRef.current.filter(l => l !== listener)
+  }
+  contextValue.fireNewHTML = () => {
+    newHTMLListenersRef.current.forEach(l => l())
   }
 
   return (
@@ -44,6 +54,9 @@ const defaultContextValue = {
   addBlurListener: noop,
   removeBlurListener: noop,
   fireBlur: noop,
+  addNewHTMLListener: noop,
+  removeNewHTMLListener: noop,
+  fireNewHTML: noop,
   isFocused: noop,
   getContentEditableElement: noop,
 }

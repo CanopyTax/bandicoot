@@ -17,15 +17,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       setHTML(html) {
         divRef.current.innerHTML = html
         divRef.current.focus()
+        richTextContext.fireNewHTML()
       },
     }
   }
-
-  useEffect(() => {
-    if (props.initialHTML) {
-      divRef.current.innerHTML = props.initialHTML
-    }
-  }, [])
 
   useEffect(() => {
     document.addEventListener('selectionchange', handleSelectionChange)
@@ -69,6 +64,13 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
     richTextContext.getContentEditableElement = () => divRef.current
   }, [isFocusedRef.current])
+
+  useEffect(() => {
+    if (props.initialHTML) {
+      divRef.current.innerHTML = props.initialHTML
+      richTextContext.fireNewHTML()
+    }
+  }, [])
 
   return (
     <div

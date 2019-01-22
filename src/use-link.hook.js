@@ -1,11 +1,24 @@
-import {useContext} from 'react'
+import {useContext, useEffect} from 'react'
 import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
-export function useLink() {
+let tempId = 0
+const noop = () => {}
+
+export function useLink({processAnchorElement = noop}) {
   const richTextContext = useContext(RichTextContext)
   const {performCommand} = useDocumentExecCommand('unlink')
   const {performCommandWithValue} = useDocumentExecCommand('insertHTML')
+
+  useEffect(() => {
+    richTextContext.addNewHTMLListener(newHtml)
+    return () => richTextContext.removeNewHTMLListener(newHtml)
+
+    function newHtml() {
+      const anchorElements = richTextContext.getContentEditableElement().querySelectorAll('a')
+      anchorElements.forEach(processAnchorElement)
+    }
+  }, [processAnchorElement])
 
   return {
     getTextFromBeforeBlur,
@@ -32,11 +45,10 @@ export function useLink() {
   }
 
   function insertLink(link, displayedText) {
-    performCommandWithValue(`<a href="${link}">${displayedText}</a>`)
-    let anchorElement = window.getSelection().getRangeAt(0).commonAncestorContainer
-    while (anchorElement && anchorElement.tagName !== 'A') {
-      anchorElement = anchorElement.parentElement
-    }
-    return anchorElement
+    const id = `rte-link-temp-id-${tempId++}`
+    performCommandWithValue(`<a href="${link}" id="${id}">${displayedText}</a>`)
+    const anchorElement = document.getElementById(id)
+    delete anchorElement.id
+    processAnchorElement(anchorElement)
   }
 }

@@ -1,53 +1,58 @@
-import React, {useContext} from 'react'
-import ReactDOM from 'react-dom'
+import React, {useContext, useEffect} from 'react'
 import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
 let tempId = 0
+const noop = () => {}
 
-export function useContentEditableFalse() {
+export function useContentEditableFalse({processContentEditableFalseElement = noop}) {
   const {performCommandWithValue} = useDocumentExecCommand('insertHTML')
   const richTextContext = useContext(RichTextContext)
 
-  return {
-    insertContentEditableFalseElement(reactElement) {
-      if (!React.isValidElement(reactElement)) {
-        throw Error(`insertContentEditableFalseElement requires a valid react element`)
-      }
+  useEffect(() => {
+    richTextContext.addNewHTMLListener(newHtml)
+    return () => richTextContext.removeNewHTMLListener(newHtml)
 
-      if (reactElement.type === React.Fragment) {
-        throw Error(`insertContentEditableFalseElement does not (yet) support fragments`)
-      }
-
-      const tempEl = document.createElement('div')
-      const id = "rte-merge-tag-temp-id-" + tempId++
-      ReactDOM.render(React.cloneElement(reactElement, {id}), tempEl, () => {
-        const htmlToInsert = tempEl.innerHTML
-        performCommandWithValue(htmlToInsert)
-        const mergeTagElement = document.getElementById(id)
-        delete mergeTagElement.id
-        mergeTagElement.contentEditable = false
-        mergeTagElement.addEventListener('click', () => selectRangeAfterNode(mergeTagElement))
-
-        // if we are inserting this at the start of the rich text content editable container, we need to make sure a
-        // cursor still appears and works when you select the beginning of the rich text container. This is done with
-        // an empty span that *is* contentEditable
-        if (!mergeTagElement.previousSibling && mergeTagElement.parentElement === richTextContext.getContentEditableElement()) {
-          const editableElementBefore = document.createElement('span')
-          mergeTagElement.parentElement.insertBefore(editableElementBefore, mergeTagElement)
-        }
-
-        // if we are inserting this at the end of the rich text content editable container, we need to make sure a
-        // cursor still appears and works when you select the end of the rich text container. This is done with
-        // an empty span that *is* contentEditable
-        if (!mergeTagElement.nextSibling && mergeTagElement.parentElement === richTextContext.getContentEditableElement()) {
-          const editableElementAfter = document.createElement('span')
-          mergeTagElement.insertAdjacentElement('afterend', editableElementAfter)
-        }
-
-        selectRangeAfterNode(mergeTagElement)
-      })
+    function newHtml() {
+      const contentEditableFalseElements = richTextContext.getContentEditableElement().querySelectorAll('[contenteditable="false"]')
+      contentEditableFalseElements.forEach(handleContentEditableFalseElement)
     }
+  }, [])
+
+  return {
+    insertContentEditableFalseElement(innerHTML) {
+      const id = "rte-ce-false-temp-id-" + tempId++
+      const htmlToInsert = `<span id="${id}">${innerHTML}</span>`
+      performCommandWithValue(htmlToInsert)
+      const contentEditableFalseElement = document.getElementById(id)
+      handleContentEditableFalseElement(contentEditableFalseElement)
+    }
+  }
+
+  function handleContentEditableFalseElement(contentEditableFalseElement) {
+    delete contentEditableFalseElement.id
+    contentEditableFalseElement.contentEditable = false
+    contentEditableFalseElement.addEventListener('click', () => selectRangeAfterNode(contentEditableFalseElement))
+
+    // if we are inserting this at the start of the rich text content editable container, we need to make sure a
+    // cursor still appears and works when you select the beginning of the rich text container. This is done with
+    // an empty span that *is* contentEditable
+    if (!contentEditableFalseElement.previousSibling && contentEditableFalseElement.parentElement === richTextContext.getContentEditableElement()) {
+      const editableElementBefore = document.createElement('span')
+      contentEditableFalseElement.parentElement.insertBefore(editableElementBefore, contentEditableFalseElement)
+    }
+
+    // if we are inserting this at the end of the rich text content editable container, we need to make sure a
+    // cursor still appears and works when you select the end of the rich text container. This is done with
+    // an empty span that *is* contentEditable
+    if (!contentEditableFalseElement.nextSibling && contentEditableFalseElement.parentElement === richTextContext.getContentEditableElement()) {
+      const editableElementAfter = document.createElement('span')
+      contentEditableFalseElement.insertAdjacentElement('afterend', editableElementAfter)
+    }
+
+    selectRangeAfterNode(contentEditableFalseElement)
+
+    processContentEditableFalseElement(contentEditableFalseElement)
   }
 }
 

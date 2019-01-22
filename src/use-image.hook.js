@@ -1,10 +1,22 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
+import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
 
 export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileBlogToUrl}) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
+  const richTextContext = useContext(RichTextContext)
+
+  useEffect(() => {
+    richTextContext.addNewHTMLListener(newHtml)
+    return () => richTextContext.removeNewHTMLListener(newHtml)
+
+    function newHtml() {
+      const imgElements = richTextContext.getContentEditableElement().querySelectorAll('img')
+      imgElements.forEach(handleImageElement)
+    }
+  }, [processImgElement])
 
   return {
     chooseFile() {
@@ -17,8 +29,7 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
           fileBlobToUrl(fileInputElement.files[0], imgUrl => {
             performCommandWithValue(imgUrl)
             const imgElement = document.querySelector(`img[src="${imgUrl}"]`)
-            imgElement.style.cursor = 'pointer'
-            processImgElement(imgElement)
+            handleImageElement(imgElement)
           })
         }
       })
@@ -33,6 +44,11 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
       selection.addRange(range)
       document.execCommand('delete')
     },
+  }
+
+  function handleImageElement(imgElement) {
+    imgElement.style.cursor = 'pointer'
+    processImgElement(imgElement)
   }
 }
 

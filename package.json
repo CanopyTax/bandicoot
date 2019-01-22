@@ -7,7 +7,8 @@
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "rimraf lib && babel src --out-dir lib"
+    "compile": "babel src --out-dir lib",
+    "build": "rimraf lib && yarn compile"
   },
   "browserslist": [
     "extends browserslist-config-canopy"

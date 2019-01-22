@@ -1,15 +1,29 @@
-import React, {useState, useEffect, useRef, useContext} from 'react'
+import React, {useState, useEffect, useRef, useContext, forwardRef} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
-export function RichTextEditor(props, editorRef) {
+export const RichTextEditor = forwardRef((props, editorRef) => {
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
   const isFocusedRef = useRef(false)
   const richTextContext = useContext(RichTextContext)
+  const unchangedTimeout = useRef(null)
+  const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)
+
+  if (editorRef) {
+    editorRef.current = {
+      getHTML() {
+        return divRef.current.innerHTML
+      },
+      setHTML(html) {
+        divRef.current.innerHTML = html
+        divRef.current.focus()
+      },
+    }
+  }
 
   useEffect(() => {
-    if (props.initialValue) {
-      divRef.current.innerHTML = props.initialValue
+    if (props.initialHTML) {
+      divRef.current.innerHTML = props.initialHTML
     }
   }, [])
 
@@ -17,6 +31,22 @@ export function RichTextEditor(props, editorRef) {
     document.addEventListener('selectionchange', handleSelectionChange)
     return () => document.removeEventListener('selectionchange', handleSelectionChange)
   })
+
+  useEffect(() => {
+    if (props.save && props.unchangedInterval && divRef.current && isFocusedRef.current) {
+      setTimeout(save, props.unchangedInterval)
+      const mutationConfig = {attributes: true, childList: true, subtree: true, characterData: true}
+      const observer = new MutationObserver(() => {
+        clearTimeout(unchangedTimeout.current)
+        unchangedTimeout.current = setTimeout(save, props.unchangedInterval)
+      })
+      observer.observe(divRef.current, mutationConfig)
+      return () => {
+        observer.disconnect()
+        clearTimeout(unchangedTimeout.current)
+      }
+    }
+  }, [props.unchangedInterval, props.save, divRef.current, isFocusedRef.current])
 
   useEffect(() => {
     richTextContext.selectRangeFromBeforeClick = () => {
@@ -38,7 +68,7 @@ export function RichTextEditor(props, editorRef) {
     richTextContext.isFocused = () => isFocusedRef.current
 
     richTextContext.getContentEditableElement = () => divRef.current
-  }, [])
+  }, [isFocusedRef.current])
 
   return (
     <div
@@ -52,7 +82,12 @@ export function RichTextEditor(props, editorRef) {
 
   function onBlur() {
     isFocusedRef.current = false
-    richTextContext.fireBlur()
+    setTimeout(() => {
+      if (!isFocusedRef.current) {
+        richTextContext.fireBlur()
+        save()
+      }
+    }, 100)
   }
 
   function onFocus() {
@@ -73,8 +108,18 @@ export function RichTextEditor(props, editorRef) {
       richTextContext.fireSelectionChanged()
     }
   }
-}
+
+  function save() {
+    const html = divRef.current.innerHTML
+    if (html !== lastSavedHTML) {
+      setLastSavedHTML(html)
+      props.save(html)
+    }
+  }
+})
 
 RichTextEditor.defaultProps = {
   className: '',
+  onBlur: () => {},
+  initialHTML: '',
 }

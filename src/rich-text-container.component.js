@@ -7,6 +7,7 @@ export function RichTextContainer(props) {
   const selectionChangedListenersRef = useRef([])
   const blurListenersRef = useRef([])
   const newHTMLListenersRef = useRef([])
+  const serializers = useRef([])
 
   contextValue.addSelectionChangedListener = listener => {
     selectionChangedListenersRef.current.push(listener)
@@ -34,6 +35,17 @@ export function RichTextContainer(props) {
   }
   contextValue.fireNewHTML = () => {
     newHTMLListenersRef.current.forEach(l => l())
+  }
+  contextValue.numSerializers = () => serializers.current.length
+  contextValue.addSerializer = serializer => {
+    serializers.current.push(serializer)
+  }
+  contextValue.removeSerializer = serializer => {
+    serializers.current = serializers.current.filter(s => s !== serializer)
+  }
+  contextValue.serialize = dom => {
+    serializers.current.forEach(serializer => serializer(dom))
+    return dom.innerHTML
   }
 
   return (

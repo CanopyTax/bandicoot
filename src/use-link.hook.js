@@ -48,7 +48,7 @@ export function useLink({processAnchorElement = noop}) {
     const id = `rte-link-temp-id-${tempId++}`
     performCommandWithValue(`<a href="${link}" id="${id}">${displayedText}</a>`)
     const anchorElement = document.getElementById(id)
-    delete anchorElement.id
+    anchorElement.removeAttribute('id')
     processAnchorElement(anchorElement)
   }
 }

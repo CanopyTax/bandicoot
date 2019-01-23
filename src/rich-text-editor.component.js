@@ -11,14 +11,25 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   if (editorRef) {
     editorRef.current = {
-      getHTML() {
-        return divRef.current.innerHTML
-      },
       setHTML(html) {
         divRef.current.innerHTML = html
         divRef.current.focus()
         richTextContext.fireNewHTML()
       },
+      resetEditor() {
+        // do it with selection and execCommand so it can be undone with Ctrl Z
+        const range = document.createRange()
+        range.selectNodeContents(divRef.current)
+        const selection = window.getSelection()
+        selection.removeAllRanges()
+        selection.addRange(range)
+        document.execCommand('delete')
+        if (divRef.current.innerHTML !== '') {
+          divRef.current.innerHTML === ''
+          divRef.current.focus()
+        }
+        richTextContext.fireNewHTML()
+      }
     }
   }
 
@@ -112,11 +123,21 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function save() {
-    const html = divRef.current.innerHTML
+    const html = serialize()
     if (html !== lastSavedHTML) {
       setLastSavedHTML(html)
       props.save(html)
     }
+  }
+
+  function serialize() {
+    let html = divRef.current.innerHTML
+    if (richTextContext.numSerializers() > 0) {
+      const dom = new DOMParser().parseFromString(html, 'text/html')
+      html = richTextContext.serialize(dom.body)
+    }
+
+    return html
   }
 })
 

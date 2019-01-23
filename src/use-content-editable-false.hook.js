@@ -30,7 +30,7 @@ export function useContentEditableFalse({processContentEditableFalseElement = no
   }
 
   function handleContentEditableFalseElement(contentEditableFalseElement) {
-    delete contentEditableFalseElement.id
+    contentEditableFalseElement.removeAttribute('id')
     contentEditableFalseElement.contentEditable = false
     contentEditableFalseElement.addEventListener('click', () => selectRangeAfterNode(contentEditableFalseElement))
 

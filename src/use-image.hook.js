@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {useState, useContext, useEffect, useRef} from 'react'
 import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
@@ -7,33 +7,38 @@ const noop = () => {}
 export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileBlogToUrl}) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     richTextContext.addNewHTMLListener(newHtml)
     return () => richTextContext.removeNewHTMLListener(newHtml)
 
     function newHtml() {
-      const imgElements = richTextContext.getContentEditableElement().querySelectorAll('img')
+      const imgElements = richTextContext.getContentEditableElement().querySelectorAll('img:not([data-text-as-image])')
       imgElements.forEach(handleImageElement)
     }
   }, [processImgElement])
 
+  useEffect(() => {
+    fileInputRef.current = document.createElement('input')
+    const fileInputElement = fileInputRef.current
+    fileInputElement.type = 'file'
+    fileInputElement.accept = '.jpg, .png, image/*'
+    fileInputElement.multiple = false
+    fileInputElement.addEventListener('input', () => {
+      if (fileInputElement.files && fileInputElement.files.length > 0) {
+        fileBlobToUrl(fileInputElement.files[0], imgUrl => {
+          performCommandWithValue(imgUrl)
+          const imgElement = document.querySelector(`img[src="${imgUrl}"]`)
+          handleImageElement(imgElement)
+        })
+      }
+    })
+  }, [fileBlobToUrl, processImgElement])
+
   return {
-    chooseFile() {
-      const fileInputElement = document.createElement('input')
-      fileInputElement.type = 'file'
-      fileInputElement.accept = '.jpg, .png, image/*'
-      fileInputElement.multiple = false
-      fileInputElement.addEventListener('input', () => {
-        if (fileInputElement.files && fileInputElement.files.length > 0) {
-          fileBlobToUrl(fileInputElement.files[0], imgUrl => {
-            performCommandWithValue(imgUrl)
-            const imgElement = document.querySelector(`img[src="${imgUrl}"]`)
-            handleImageElement(imgElement)
-          })
-        }
-      })
-      fileInputElement.click()
+    chooseFile(evt) {
+      fileInputRef.current.click()
     },
 
     removeImage(imgElement) {

@@ -1,5 +1,4 @@
 import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
-import {getInsertedElement} from './get-inserted-element.util.js'
 import {useContext, useState, useEffect} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 

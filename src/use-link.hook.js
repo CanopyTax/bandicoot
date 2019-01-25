@@ -9,16 +9,7 @@ export function useLink({processAnchorElement = noop}) {
   const richTextContext = useContext(RichTextContext)
   const {performCommand} = useDocumentExecCommand('unlink')
   const {performCommandWithValue} = useDocumentExecCommand('insertHTML')
-
-  useEffect(() => {
-    richTextContext.addNewHTMLListener(newHtml)
-    return () => richTextContext.removeNewHTMLListener(newHtml)
-
-    function newHtml() {
-      const anchorElements = richTextContext.getContentEditableElement().querySelectorAll('a')
-      anchorElements.forEach(processAnchorElement)
-    }
-  }, [processAnchorElement])
+  useNewHtmlHandler()
 
   return {
     getTextFromBeforeBlur,
@@ -50,5 +41,17 @@ export function useLink({processAnchorElement = noop}) {
     const anchorElement = document.getElementById(id)
     anchorElement.removeAttribute('id')
     processAnchorElement(anchorElement)
+  }
+
+  function useNewHtmlHandler() {
+    useEffect(() => {
+      richTextContext.addNewHTMLListener(newHtml)
+      return () => richTextContext.removeNewHTMLListener(newHtml)
+
+      function newHtml() {
+        const anchorElements = richTextContext.getContentEditableElement().querySelectorAll('a')
+        anchorElements.forEach(processAnchorElement)
+      }
+    }, [processAnchorElement])
   }
 }

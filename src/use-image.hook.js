@@ -8,33 +8,8 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
   const fileInputRef = useRef(null)
-
-  useEffect(() => {
-    richTextContext.addNewHTMLListener(newHtml)
-    return () => richTextContext.removeNewHTMLListener(newHtml)
-
-    function newHtml() {
-      const imgElements = richTextContext.getContentEditableElement().querySelectorAll('img:not([data-text-as-image])')
-      imgElements.forEach(handleImageElement)
-    }
-  }, [processImgElement])
-
-  useEffect(() => {
-    fileInputRef.current = document.createElement('input')
-    const fileInputElement = fileInputRef.current
-    fileInputElement.type = 'file'
-    fileInputElement.accept = '.jpg, .png, image/*'
-    fileInputElement.multiple = false
-    fileInputElement.addEventListener('input', () => {
-      if (fileInputElement.files && fileInputElement.files.length > 0) {
-        fileBlobToUrl(fileInputElement.files[0], imgUrl => {
-          performCommandWithValue(imgUrl)
-          const imgElement = document.querySelector(`img[src="${imgUrl}"]`)
-          handleImageElement(imgElement)
-        })
-      }
-    })
-  }, [fileBlobToUrl, processImgElement])
+  useNewHtmlHandler()
+  useFileChooserInput()
 
   return {
     chooseFile(evt) {
@@ -54,6 +29,37 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
   function handleImageElement(imgElement) {
     imgElement.style.cursor = 'pointer'
     processImgElement(imgElement)
+  }
+
+  function useNewHtmlHandler() {
+    useEffect(() => {
+      richTextContext.addNewHTMLListener(newHtml)
+      return () => richTextContext.removeNewHTMLListener(newHtml)
+
+      function newHtml() {
+        const imgElements = richTextContext.getContentEditableElement().querySelectorAll('img:not([data-text-as-image])')
+        imgElements.forEach(handleImageElement)
+      }
+    }, [processImgElement])
+  }
+
+  function useFileChooserInput() {
+    useEffect(() => {
+      fileInputRef.current = document.createElement('input')
+      const fileInputElement = fileInputRef.current
+      fileInputElement.type = 'file'
+      fileInputElement.accept = '.jpg, .png, image/*'
+      fileInputElement.multiple = false
+      fileInputElement.addEventListener('input', () => {
+        if (fileInputElement.files && fileInputElement.files.length > 0) {
+          fileBlobToUrl(fileInputElement.files[0], imgUrl => {
+            performCommandWithValue(imgUrl)
+            const imgElement = document.querySelector(`img[src="${imgUrl}"]`)
+            handleImageElement(imgElement)
+          })
+        }
+      })
+    }, [fileBlobToUrl, processImgElement])
   }
 }
 

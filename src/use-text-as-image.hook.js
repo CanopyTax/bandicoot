@@ -4,7 +4,7 @@ import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
 
-export function useTextAsImage({processSerializedSpan = noop}) {
+export function useTextAsImage({processSerializedElement = noop}) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
 
@@ -36,7 +36,7 @@ export function useTextAsImage({processSerializedSpan = noop}) {
         const imgEl = textAsImage[i]
         const spanEl = document.createElement('span')
         spanEl.dataset.textAsImage = imgEl.dataset.textAsImage
-        processSerializedSpan(spanEl, spanEl.dataset.textAsImage)
+        processSerializedElement(spanEl, spanEl.dataset.textAsImage)
         imgEl.parentNode.replaceChild(spanEl, imgEl)
       }
     }

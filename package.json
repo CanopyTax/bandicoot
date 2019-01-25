@@ -1,6 +1,6 @@
 {
   "name": "bandicoot",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "React rich text editor",
   "main": "lib/bandicoot.js",
   "repository": "git@github.com:CanopyTax/bandicoot.git",

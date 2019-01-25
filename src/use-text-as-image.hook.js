@@ -58,7 +58,8 @@ function textToUrl(text, referenceEl) {
   const computedStyle = window.getComputedStyle(referenceEl)
   const currentFontSize = Number(computedStyle.fontSize.replace('px', ''))
   const currentLineHeight = Number(computedStyle.lineHeight.replace('px', ''))
-  const font = `bold ${currentFontSize}px Source Sans Pro`
+  const currentFontFamily = computedStyle.fontFamily
+  const font = `bold ${currentFontSize}px ${currentFontFamily}`
 
   const testDiv = document.createElement('div')
   testDiv.style.font = font

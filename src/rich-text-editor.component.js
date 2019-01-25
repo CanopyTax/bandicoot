@@ -12,25 +12,25 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   if (editorRef) {
     editorRef.current = {
       setHTML(html) {
+        emptyEditor()
         divRef.current.innerHTML = html
         divRef.current.focus()
         richTextContext.fireNewHTML()
       },
       resetEditor() {
-        // do it with selection and execCommand so it can be undone with Ctrl Z
-        const range = document.createRange()
-        range.selectNodeContents(divRef.current)
-        const selection = window.getSelection()
-        selection.removeAllRanges()
-        selection.addRange(range)
-        document.execCommand('delete')
-        if (divRef.current.innerHTML !== '') {
-          divRef.current.innerHTML === ''
-          divRef.current.focus()
-        }
-        richTextContext.fireNewHTML()
+        editorRef.current.setHTML('')
       }
     }
+  }
+
+  function emptyEditor() {
+    // do it with selection and execCommand so it can be undone with Ctrl Z
+    const range = document.createRange()
+    range.selectNodeContents(divRef.current)
+    const selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
+    document.execCommand('delete')
   }
 
   useEffect(() => {

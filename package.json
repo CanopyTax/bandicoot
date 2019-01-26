@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "watch": "babel src --out-dir --watch --out-dir lib --source-maps",
-    "build": "rimraf lib && babel src --out-dir lib --source-maps"
+    "build": "rimraf lib && babel src --out-dir lib --source-maps",
+    "prepublish": "yarn build"
   },
   "browserslist": [
     "extends browserslist-config-canopy"

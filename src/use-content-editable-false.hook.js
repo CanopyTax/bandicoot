@@ -4,20 +4,11 @@ import {RichTextContext} from './rich-text-container.component.js'
 
 let tempId = 0
 const noop = () => {}
+const defaultOptions = {processContentEditableFalseElement: noop}
 
-export function useContentEditableFalse({processContentEditableFalseElement = noop}) {
+export function useContentEditableFalse({processContentEditableFalseElement = noop} = defaultOptions) {
   const {performCommandWithValue} = useDocumentExecCommand('insertHTML')
   const richTextContext = useContext(RichTextContext)
-
-  useEffect(() => {
-    richTextContext.addNewHTMLListener(newHtml)
-    return () => richTextContext.removeNewHTMLListener(newHtml)
-
-    function newHtml() {
-      const contentEditableFalseElements = richTextContext.getContentEditableElement().querySelectorAll('[contenteditable="false"]')
-      contentEditableFalseElements.forEach(handleContentEditableFalseElement)
-    }
-  }, [])
 
   return {
     insertContentEditableFalseElement(innerHTML) {
@@ -27,6 +18,18 @@ export function useContentEditableFalse({processContentEditableFalseElement = no
       const contentEditableFalseElement = document.getElementById(id)
       handleContentEditableFalseElement(contentEditableFalseElement)
     }
+  }
+
+  function useNewHtmlHandler() {
+    useEffect(() => {
+      richTextContext.addNewHTMLListener(newHtml)
+      return () => richTextContext.removeNewHTMLListener(newHtml)
+
+      function newHtml() {
+        const contentEditableFalseElements = richTextContext.getContentEditableElement().querySelectorAll('[contenteditable="false"]')
+        contentEditableFalseElements.forEach(handleContentEditableFalseElement)
+      }
+    }, [])
   }
 
   function handleContentEditableFalseElement(contentEditableFalseElement) {

@@ -3,54 +3,60 @@ import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
+const defaultOptions = {processSerializedElement: noop}
 
-export function useTextAsImage({processSerializedElement = noop}) {
+export function useTextAsImage({processSerializedElement = noop} = defaultOptions) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
-
-  useEffect(() => {
-    richTextContext.addNewHTMLListener(newHtml)
-    return () => richTextContext.removeNewHTMLListener(newHtml)
-
-    function newHtml() {
-      const spanEls = richTextContext.getContentEditableElement().querySelectorAll('span[data-text-as-image]')
-      for (let i = 0; i < spanEls.length; i++) {
-        const spanEl = spanEls[i]
-        const url = textToUrl(spanEl.dataset.textAsImage, spanEl.previousElementSibling || spanEl.nextElementSibling || spanEl.parentElement)
-        const imgEl = document.createElement('img')
-        imgEl.src = url
-        processImgElement(imgEl, spanEl.dataset.textAsImage)
-        spanEl.parentNode.replaceChild(imgEl, spanEl)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    richTextContext.addSerializer(htmlSerializer)
-    return () => richTextContext.removeSerializer(htmlSerializer)
-
-    function htmlSerializer(dom) {
-      const textAsImage = dom.querySelectorAll('img[data-text-as-image]')
-
-      for (let i = 0; i < textAsImage.length; i++) {
-        const imgEl = textAsImage[i]
-        const spanEl = document.createElement('span')
-        spanEl.dataset.textAsImage = imgEl.dataset.textAsImage
-        processSerializedElement(spanEl, spanEl.dataset.textAsImage)
-        imgEl.parentNode.replaceChild(spanEl, imgEl)
-      }
-    }
-  }, [])
+  useNewHtmlHandler()
+  useSerializer()
 
   return {
     insertTextAsImage(text) {
       richTextContext.selectRangeFromBeforeClick()
-
       const url = textToUrl(text, getSelectedElement())
       performCommandWithValue(url)
       const imgElement = document.querySelector(`img[src="${url}"]`)
       processImgElement(imgElement, text)
     }
+  }
+
+  function useNewHtmlHandler() {
+    useEffect(() => {
+      richTextContext.addNewHTMLListener(newHtml)
+      return () => richTextContext.removeNewHTMLListener(newHtml)
+
+      function newHtml() {
+        const spanEls = richTextContext.getContentEditableElement().querySelectorAll('span[data-text-as-image]')
+        for (let i = 0; i < spanEls.length; i++) {
+          const spanEl = spanEls[i]
+          const url = textToUrl(spanEl.dataset.textAsImage, spanEl.previousElementSibling || spanEl.nextElementSibling || spanEl.parentElement)
+          const imgEl = document.createElement('img')
+          imgEl.src = url
+          processImgElement(imgEl, spanEl.dataset.textAsImage)
+          spanEl.parentNode.replaceChild(imgEl, spanEl)
+        }
+      }
+    }, [])
+  }
+
+  function useSerializer() {
+    useEffect(() => {
+      richTextContext.addSerializer(htmlSerializer)
+      return () => richTextContext.removeSerializer(htmlSerializer)
+
+      function htmlSerializer(dom) {
+        const textAsImage = dom.querySelectorAll('img[data-text-as-image]')
+
+        for (let i = 0; i < textAsImage.length; i++) {
+          const imgEl = textAsImage[i]
+          const spanEl = document.createElement('span')
+          spanEl.dataset.textAsImage = imgEl.dataset.textAsImage
+          processSerializedElement(spanEl, spanEl.dataset.textAsImage)
+          imgEl.parentNode.replaceChild(spanEl, imgEl)
+        }
+      }
+    }, [])
   }
 }
 

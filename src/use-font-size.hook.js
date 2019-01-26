@@ -2,7 +2,7 @@ import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {useContext, useState, useEffect} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
-export function useFontSize({defaultFontSize = '14px', fontSizes = []}) {
+export function useFontSize({defaultFontSize = '14px', fontSizes}) {
   if (fontSizes.length > 7) {
     throw Error(`Browsers only support up to 7 font sizes with document.execCommand('fontSize', null, size)`)
   }

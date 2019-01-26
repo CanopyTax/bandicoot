@@ -4,8 +4,9 @@ import {RichTextContext} from './rich-text-container.component.js'
 
 let tempId = 0
 const noop = () => {}
+const defaultOptions = {processAnchorElement: noop}
 
-export function useLink({processAnchorElement = noop}) {
+export function useLink({processAnchorElement = noop} = defaultOptions) {
   const richTextContext = useContext(RichTextContext)
   const {performCommand} = useDocumentExecCommand('unlink')
   const {performCommandWithValue} = useDocumentExecCommand('insertHTML')

@@ -3,8 +3,9 @@ import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
+const defaultOpts = {processImgElement: noop, fileBlobToUrl: defaultFileBlobToUrl}
 
-export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileBlogToUrl}) {
+export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileBlobToUrl} = defaultOpts) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
   const fileInputRef = useRef(null)
@@ -63,6 +64,6 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
   }
 }
 
-function defaultFileBlogToUrl(file, cbk) {
+function defaultFileBlobToUrl(file, cbk) {
   cbk(URL.createObjectURL(file))
 }

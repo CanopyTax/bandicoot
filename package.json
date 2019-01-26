@@ -3,7 +3,7 @@
   "version": "2.0.1",
   "description": "React rich text editor",
   "main": "dist/bandicoot.umd.js",
-  "module": "dist/bandicoot.js",
+  "module": "dist/bandicoot.esm.js",
   "repository": "git@github.com:CanopyTax/bandicoot.git",
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",

@@ -20,7 +20,7 @@ export function useLink({processAnchorElement = noop} = defaultOptions) {
   }
 
   function getTextFromBeforeBlur() {
-    const range = richTextContext.getRangeFromBeforeClick()
+    const range = richTextContext.getRangeFromBeforeBlur()
     if (range) {
       return range.toString()
     } else {

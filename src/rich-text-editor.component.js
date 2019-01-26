@@ -55,7 +55,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }, [props.unchangedInterval, props.save, divRef.current, isFocusedRef.current])
 
   useEffect(() => {
-    richTextContext.selectRangeFromBeforeClick = () => {
+    richTextContext.selectRangeFromBeforeBlur = () => {
       if (divRef.current && document.activeElement !== divRef.current && !divRef.current.contains(document.activeElement)) {
         if (selectionRangeBeforeBlurRef.current) {
           const currentSelection = window.getSelection()
@@ -67,7 +67,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       }
     }
 
-    richTextContext.getRangeFromBeforeClick = () => {
+    richTextContext.getRangeFromBeforeBlur = () => {
       return selectionRangeBeforeBlurRef.current
     }
 
@@ -143,6 +143,5 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
 RichTextEditor.defaultProps = {
   className: '',
-  onBlur: () => {},
   initialHTML: '',
 }

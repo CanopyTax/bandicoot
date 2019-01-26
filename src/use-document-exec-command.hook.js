@@ -6,11 +6,11 @@ export function useDocumentExecCommand(commandName) {
 
   return {
     performCommand(evt) {
-      richTextContext.selectRangeFromBeforeClick()
+      richTextContext.selectRangeFromBeforeBlur()
       document.execCommand(commandName)
     },
     performCommandWithValue(value) {
-      richTextContext.selectRangeFromBeforeClick()
+      richTextContext.selectRangeFromBeforeBlur()
       const showDefaultUI = null
       document.execCommand(commandName, showDefaultUI, value)
     },

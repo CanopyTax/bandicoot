@@ -61,8 +61,8 @@ const defaultContextValue = {
   addSelectionChangedListener: noop,
   removeSelectionChangedListener: noop,
   fireSelectionChanged: noop,
-  selectRangeFromBeforeClick: noop,
-  getRangeBeforeClick: noop,
+  selectRangeFromBeforeBlur: noop,
+  getRangeBeforeBlur: noop,
   addBlurListener: noop,
   removeBlurListener: noop,
   fireBlur: noop,
@@ -71,6 +71,10 @@ const defaultContextValue = {
   fireNewHTML: noop,
   isFocused: noop,
   getContentEditableElement: noop,
+  numSerializers: () => 0,
+  addSerializer: noop,
+  removeSerializer: noop,
+  serialize: noop,
 }
 
 export const RichTextContext = React.createContext(defaultContextValue)

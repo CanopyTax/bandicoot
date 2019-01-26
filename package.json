@@ -7,8 +7,7 @@
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "watch": "babel src --out-dir --watch --out-dir lib --source-maps",
-    "build": "rimraf lib && babel src --out-dir lib --source-maps",
+    "build": "rimraf lib && rollup -c",
     "prepublish": "yarn build"
   },
   "browserslist": [
@@ -26,7 +25,10 @@
     "browserslist-config-canopy": "^2.0.0",
     "react": "16.8.0-alpha.1",
     "react-dom": "16.8.0-alpha.1",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "rollup": "^1.1.2",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-node-resolve": "^4.0.0"
   },
   "dependencies": {}
 }

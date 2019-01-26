@@ -20,14 +20,14 @@ const config = {
 export default [
   Object.assign({}, config, {
     output: {
-      file: 'lib/bandicoot.js',
+      file: 'dist/bandicoot.esm.js',
       format: 'esm',
       sourcemap: true,
     },
   }),
   Object.assign({}, config, {
     output: {
-      file: 'lib/bandicoot.umd.js',
+      file: 'dist/bandicoot.umd.js',
       format: 'umd',
       name: 'bandicoot',
       sourcemap: true,

@@ -2,7 +2,8 @@
   "name": "bandicoot",
   "version": "2.0.1",
   "description": "React rich text editor",
-  "main": "lib/bandicoot.js",
+  "main": "lib/bandicoot.umd.js",
+  "module": "lib/bandicoot.js",
   "repository": "git@github.com:CanopyTax/bandicoot.git",
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",
@@ -28,6 +29,7 @@
     "rimraf": "^2.6.3",
     "rollup": "^1.1.2",
     "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-babel-minify": "^7.0.0",
     "rollup-plugin-node-resolve": "^4.0.0"
   },
   "dependencies": {}

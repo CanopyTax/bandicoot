@@ -6,7 +6,7 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
   if (fontSizes.length > 7) {
     throw Error(`Browsers only support up to 7 font sizes with document.execCommand('fontSize', null, size)`)
   }
-
+  const [fontSize, setFontSize] = useState(defaultFontSize)
   const {performCommandWithValue} = useDocumentExecCommand('fontSize')
   const richTextContext = useContext(RichTextContext)
   const currentlySelectedFontSize = useCurrentlySelectedFontSize()
@@ -25,8 +25,6 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
   }
 
   function useCurrentlySelectedFontSize() {
-    const [fontSize, setFontSize] = useState(defaultFontSize)
-
     useEffect(() => {
       richTextContext.addSelectionChangedListener(selectionChanged)
       return () => richTextContext.removeSelectionChangedListener(selectionChanged)

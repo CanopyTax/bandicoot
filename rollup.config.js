@@ -31,6 +31,9 @@ export default [
       format: 'umd',
       name: 'bandicoot',
       sourcemap: true,
+      globals: {
+        'react': 'React',
+      },
     },
   }),
 ]

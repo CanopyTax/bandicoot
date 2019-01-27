@@ -38,7 +38,7 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
           selectionNode = selectionNode.parentElement
         }
         const stringFontSize = window.getComputedStyle(selectionNode).fontSize
-        const newSize = Number(stringFontSize.slice(0, stringFontSize.length - 2))
+        const newSize = stringFontSize
         if (newSize !== fontSize) {
           setFontSize(newSize)
         }

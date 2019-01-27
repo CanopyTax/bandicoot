@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef, useContext, forwardRef} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
+const noop = () => {}
+
 export const RichTextEditor = forwardRef((props, editorRef) => {
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
@@ -144,4 +146,5 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 RichTextEditor.defaultProps = {
   className: '',
   initialHTML: '',
+  save: noop,
 }

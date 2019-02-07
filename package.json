@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist && rollup -c",
+    "watch": "rollup -c --watch",
     "prepublish": "yarn build"
   },
   "browserslist": [

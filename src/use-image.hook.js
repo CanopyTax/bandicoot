@@ -51,7 +51,7 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
       fileInputElement.type = 'file'
       fileInputElement.accept = '.jpg, .png, image/*'
       fileInputElement.multiple = false
-      fileInputElement.addEventListener('input', () => {
+      fileInputElement.addEventListener('change', () => {
         if (fileInputElement.files && fileInputElement.files.length > 0) {
           fileBlobToUrl(fileInputElement.files[0], imgUrl => {
             performCommandWithValue(imgUrl)

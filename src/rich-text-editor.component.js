@@ -83,6 +83,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       divRef.current.innerHTML = props.initialHTML
       richTextContext.fireNewHTML()
     }
+    if (props.placeHolder) {
+      document.styleSheets[0].insertRule('[contentEditable=true]:empty:not(:focus):before { content: attr(data-placeholder) } ', 0);
+    }
   }, [])
 
   return (
@@ -92,6 +95,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       onFocus={onFocus}
       ref={divRef}
       className={props.className}
+      data-placeholder={props.placeHolder}
     />
   )
 
@@ -147,4 +151,5 @@ RichTextEditor.defaultProps = {
   className: '',
   initialHTML: '',
   save: noop,
+  placeHolder: ''
 }

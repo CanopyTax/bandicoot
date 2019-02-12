@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef, useContext, forwardRef} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
+let globalBandicootId = 0
 
 export const RichTextEditor = forwardRef((props, editorRef) => {
   const divRef = useRef(null)
@@ -9,6 +10,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   const isFocusedRef = useRef(false)
   const richTextContext = useContext(RichTextContext)
   const unchangedTimeout = useRef(null)
+  const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)
 
   if (editorRef) {
@@ -85,13 +87,24 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (props.placeholder) {
+      const styleElement = document.createElement('style')
+      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); color: ${props.placeholderColor}; }`
+      document.head.appendChild(styleElement)
+
+      return () => styleElement.parentNode.removeChild(styleElement)
+    }
+  },[props.placeholder, props.placeholderColor, bandicootId.current])
+
   return (
     <div
       contentEditable
       onBlur={onBlur}
       onFocus={onFocus}
       ref={divRef}
-      className={props.className}
+      className={props.className + " bandicoot-id-" + bandicootId.current}
+      data-placeholder={props.placeholder}
     />
   )
 
@@ -147,4 +160,6 @@ RichTextEditor.defaultProps = {
   className: '',
   initialHTML: '',
   save: noop,
+  placeholder: '',
+  placeholderColor: '#CFCFCF'
 }

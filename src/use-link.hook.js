@@ -62,7 +62,7 @@ export function useLink({processAnchorElement = noop} = defaultOptions) {
       window.navigator.userAgent.includes('Edge/14') ||
       window.navigator.userAgent.includes('Edge/15') ||
       window.navigator.userAgent.includes('Edge/16') ||
-      window.navigator.userAgent.includes('Edge/17') ||
+      window.navigator.userAgent.includes('Edge/17')
     ) {
       // Older versions of Edge remove the <a> when you unlink, but keep the text blue and underlined so it looks like a link.
       // Ideally we'd be super smart about working around this, but for now I'm just removing all rich text formatting from the

@@ -15,7 +15,7 @@ export function useLink({processAnchorElement = noop} = defaultOptions) {
   return {
     getTextFromBeforeBlur,
     selectEntireLink,
-    unlink: performCommand,
+    unlink,
     insertLink,
   }
 
@@ -54,5 +54,17 @@ export function useLink({processAnchorElement = noop} = defaultOptions) {
         anchorElements.forEach(processAnchorElement)
       }
     }, [processAnchorElement])
+  }
+
+  function unlink() {
+    performCommand()
+    if (
+      window.navigator.userAgent.includes('Edge/14') ||
+      window.navigator.userAgent.includes('Edge/15') ||
+      window.navigator.userAgent.includes('Edge/16') ||
+      window.navigator.userAgent.includes('Edge/17') ||
+    ) {
+      document.execCommand('removeFormat')
+    }
   }
 }

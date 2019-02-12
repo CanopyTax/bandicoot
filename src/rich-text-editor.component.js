@@ -95,7 +95,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
       return () => styleElement.parentNode.removeChild(styleElement)
     }
-  },[props.placeholder, bandicootId.current])
+  },[props.placeholder, props.placeholderColor, bandicootId.current])
 
   return (
     <div

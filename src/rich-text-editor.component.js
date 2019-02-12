@@ -89,7 +89,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   useEffect(() => {
     const styleElement = document.createElement('style')
-    styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); color: #CFCFCF; }`
+    styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); color: ${props.placeholderColor}; }`
     document.head.appendChild(styleElement)
 
     return () => styleElement.parentNode.removeChild(styleElement)
@@ -102,7 +102,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       onFocus={onFocus}
       ref={divRef}
       className={props.className + " bandicoot-id-" + bandicootId.current}
-      data-placeholder={props.placeHolder}
+      data-placeholder={props.placeholder}
     />
   )
 
@@ -158,5 +158,6 @@ RichTextEditor.defaultProps = {
   className: '',
   initialHTML: '',
   save: noop,
-  placeHolder: ''
+  placeholder: '',
+  placeholderColor: '#CFCFCF'
 }

@@ -89,7 +89,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   useEffect(() => {
     const styleElement = document.createElement('style')
-    styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); }`
+    styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); color: #CFCFCF; }`
     document.head.appendChild(styleElement)
 
     return () => styleElement.parentNode.removeChild(styleElement)

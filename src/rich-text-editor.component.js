@@ -88,11 +88,13 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }, [])
 
   useEffect(() => {
-    const styleElement = document.createElement('style')
-    styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); color: ${props.placeholderColor}; }`
-    document.head.appendChild(styleElement)
+    if (props.placeholder) {
+      const styleElement = document.createElement('style')
+      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); color: ${props.placeholderColor}; }`
+      document.head.appendChild(styleElement)
 
-    return () => styleElement.parentNode.removeChild(styleElement)
+      return () => styleElement.parentNode.removeChild(styleElement)
+    }
   },[props.placeholder, bandicootId.current])
 
   return (

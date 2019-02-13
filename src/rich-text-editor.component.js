@@ -7,7 +7,7 @@ let globalBandicootId = 0
 export const RichTextEditor = forwardRef((props, editorRef) => {
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
-  const isFocusedRef = useRef(false)
+  const [ focused, setFocused ] = useState(() => false)
   const richTextContext = useContext(RichTextContext)
   const unchangedTimeout = useRef(null)
   const bandicootId = useRef(globalBandicootId++)
@@ -44,7 +44,8 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   })
 
   useEffect(() => {
-    if (props.save && props.unchangedInterval && divRef.current && isFocusedRef.current) {
+    if (props.save && props.unchangedInterval && divRef.current && focused) {
+      console.log('changed')
       setTimeout(save, props.unchangedInterval)
       const mutationConfig = {attributes: true, childList: true, subtree: true, characterData: true}
       const observer = new MutationObserver(() => {
@@ -57,7 +58,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
         clearTimeout(unchangedTimeout.current)
       }
     }
-  }, [props.unchangedInterval, props.save, divRef.current, isFocusedRef.current])
+  }, [props.unchangedInterval, props.save, divRef.current, focused])
 
   useEffect(() => {
     richTextContext.selectRangeFromBeforeBlur = () => {
@@ -76,10 +77,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       return selectionRangeBeforeBlurRef.current
     }
 
-    richTextContext.isFocused = () => isFocusedRef.current
+    richTextContext.isFocused = () => focused
 
     richTextContext.getContentEditableElement = () => divRef.current
-  }, [isFocusedRef.current])
+  }, [focused])
 
   useEffect(() => {
     if (props.initialHTML) {
@@ -110,9 +111,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   )
 
   function onBlur() {
-    isFocusedRef.current = false
+    setFocused(false)
     setTimeout(() => {
-      if (!isFocusedRef.current) {
+      if (!focused) {
         richTextContext.fireBlur()
         save()
       }
@@ -120,7 +121,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function onFocus() {
-    isFocusedRef.current = true
+    setFocused(true)
     const selection = window.getSelection()
     if (selection.rangeCount > 0) {
       selectionRangeBeforeBlurRef.current = selection.getRangeAt(0)
@@ -128,7 +129,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function handleSelectionChange(evt) {
-    if (isFocusedRef.current) {
+    if (focused) {
       const selection = window.getSelection()
       if (selection.rangeCount > 0) {
         selectionRangeBeforeBlurRef.current = window.getSelection().getRangeAt(0)

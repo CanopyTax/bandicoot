@@ -45,8 +45,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useEffect(() => {
     if (props.save && props.unchangedInterval && divRef.current && focused) {
       const mutationConfig = {attributes: true, childList: true, subtree: true, characterData: true}
+      let timeout
       const observer = new MutationObserver(() => {
-        const timeout = setTimeout(save, props.unchangedInterval)
+        clearTimeout(timeout)
+        timeout = setTimeout(save, props.unchangedInterval)
       })
       observer.observe(divRef.current, mutationConfig)
       return () => {

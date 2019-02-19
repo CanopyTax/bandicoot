@@ -7,10 +7,8 @@ let globalBandicootId = 0
 export const RichTextEditor = forwardRef((props, editorRef) => {
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
-  const [ focused, setFocused ] = useState(() => false)
+  const [ focused, setFocused ] = useState(() => null)
   const richTextContext = useContext(RichTextContext)
-  const unchangedTimeout = useRef(null)
-  const blurTimeout = useRef(null)
   const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)
 
@@ -48,13 +46,12 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     if (props.save && props.unchangedInterval && divRef.current && focused) {
       const mutationConfig = {attributes: true, childList: true, subtree: true, characterData: true}
       const observer = new MutationObserver(() => {
-        clearTimeout(unchangedTimeout.current)
-        unchangedTimeout.current = setTimeout(save, props.unchangedInterval)
+        const timeout = setTimeout(save, props.unchangedInterval)
       })
       observer.observe(divRef.current, mutationConfig)
       return () => {
         observer.disconnect()
-        clearTimeout(unchangedTimeout.current)
+        clearTimeout(timeout)
       }
     }
   }, [props.unchangedInterval, props.save, divRef.current, focused])
@@ -65,13 +62,12 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     // due to focused state changing we need to either clear the blurTimeout to prevent a save action from firing 
     // (in the case of a quick refocus triggered by the rich text buttons) or fire a save event after waiting 100ms
     if (focused === false) {
-      clearTimeout(blurTimeout.current)
-      blurTimeout.current = setTimeout(() => {
+      const timeout = setTimeout(() => {
         richTextContext.fireBlur()
         save()
       }, 100)
       return () => {
-        clearTimeout(blurTimeout.current)
+        clearTimeout(timeout)
       }
     } 
   }, [focused])

@@ -10,6 +10,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   const [ focused, setFocused ] = useState(() => false)
   const richTextContext = useContext(RichTextContext)
   const unchangedTimeout = useRef(null)
+  const blurTimeout = useRef(null)
   const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)
 
@@ -45,7 +46,6 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   useEffect(() => {
     if (props.save && props.unchangedInterval && divRef.current && focused) {
-      setTimeout(save, props.unchangedInterval)
       const mutationConfig = {attributes: true, childList: true, subtree: true, characterData: true}
       const observer = new MutationObserver(() => {
         clearTimeout(unchangedTimeout.current)
@@ -58,6 +58,23 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       }
     }
   }, [props.unchangedInterval, props.save, divRef.current, focused])
+
+  useEffect(() => {
+    // Clicking on bandicoot richtext buttons triggers a blur event that will setFocus to false we want to delay the
+    // save event that is triggered by blur events. 100ms is arbitrary. Whenever react rerenders the rich-text-editor
+    // due to focused state changing we need to either clear the blurTimeout to prevent a save action from firing 
+    // (in the case of a quick refocus triggered by the rich text buttons) or fire a save event after waiting 100ms
+    if (focused === false) {
+      clearTimeout(blurTimeout.current)
+      blurTimeout.current = setTimeout(() => {
+        richTextContext.fireBlur()
+        save()
+      }, 100)
+      return () => {
+        clearTimeout(blurTimeout.current)
+      }
+    } 
+  }, [focused])
 
   useEffect(() => {
     richTextContext.selectRangeFromBeforeBlur = () => {
@@ -101,23 +118,13 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   return (
     <div
       contentEditable
-      onBlur={onBlur}
+      onBlur={() => setFocused(false)}
       onFocus={onFocus}
       ref={divRef}
       className={props.className + " bandicoot-id-" + bandicootId.current}
       data-placeholder={props.placeholder}
     />
   )
-
-  function onBlur() {
-    setFocused(false)
-    setTimeout(() => {
-      if (!focused) {
-        richTextContext.fireBlur()
-        save()
-      }
-    }, 100)
-  }
 
   function onFocus() {
     setFocused(true)

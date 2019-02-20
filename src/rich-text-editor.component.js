@@ -7,7 +7,7 @@ let globalBandicootId = 0
 export const RichTextEditor = forwardRef((props, editorRef) => {
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
-  const [ focused, setFocused ] = useState(() => null)
+  const [ focused, setFocused ] = useState(null)
   const richTextContext = useContext(RichTextContext)
   const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)

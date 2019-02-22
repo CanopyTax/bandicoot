@@ -7,7 +7,7 @@ let globalBandicootId = 0
 export const RichTextEditor = forwardRef((props, editorRef) => {
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
-  const [ focused, setFocused ] = useState(null)
+  const {isFocused, setFocused} = useSynchronousFocusState()
   const richTextContext = useContext(RichTextContext)
   const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)
@@ -34,6 +34,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     const selection = window.getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
+    document.execCommand('removeFormat')
     document.execCommand('delete')
   }
 
@@ -43,7 +44,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   })
 
   useEffect(() => {
-    if (props.save && props.unchangedInterval && divRef.current && focused) {
+    if (props.save && props.unchangedInterval && divRef.current && isFocused()) {
       const mutationConfig = {attributes: true, childList: true, subtree: true, characterData: true}
       let timeout
       const observer = new MutationObserver(() => {
@@ -56,14 +57,14 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
         clearTimeout(timeout)
       }
     }
-  }, [props.unchangedInterval, props.save, divRef.current, focused])
+  }, [props.unchangedInterval, props.save, divRef.current, isFocused()])
 
   useEffect(() => {
     // Clicking on bandicoot richtext buttons triggers a blur event that will setFocus to false we want to delay the
     // save event that is triggered by blur events. 100ms is arbitrary. Whenever react rerenders the rich-text-editor
     // due to focused state changing we need to either clear the blurTimeout to prevent a save action from firing 
     // (in the case of a quick refocus triggered by the rich text buttons) or fire a save event after waiting 100ms
-    if (focused === false) {
+    if (isFocused() === false) {
       const timeout = setTimeout(() => {
         richTextContext.fireBlur()
         save()
@@ -72,18 +73,16 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
         clearTimeout(timeout)
       }
     } 
-  }, [focused])
+  }, [isFocused()])
 
   useEffect(() => {
     richTextContext.selectRangeFromBeforeBlur = () => {
       if (divRef.current && document.activeElement !== divRef.current && !divRef.current.contains(document.activeElement)) {
-        if (selectionRangeBeforeBlurRef.current) {
-          const currentSelection = window.getSelection()
-          currentSelection.removeAllRanges()
-          currentSelection.addRange(selectionRangeBeforeBlurRef.current)
-        } else {
-          divRef.current.focus()
-        }
+        divRef.current.focus()
+        setFocused(true)
+        // We're using setTimeout because if we don't wait a tick of the event loop, the browser will tell us the old
+        // command state from before we focused.
+        setTimeout(handleSelectionChange)
       }
     }
 
@@ -91,10 +90,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       return selectionRangeBeforeBlurRef.current
     }
 
-    richTextContext.isFocused = () => focused
+    richTextContext.isFocused = isFocused
 
     richTextContext.getContentEditableElement = () => divRef.current
-  }, [focused])
+  })
 
   useEffect(() => {
     if (props.initialHTML) {
@@ -116,13 +115,17 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   return (
     <div
       contentEditable
-      onBlur={() => setFocused(false)}
+      onBlur={onBlur}
       onFocus={onFocus}
       ref={divRef}
       className={props.className + " bandicoot-id-" + bandicootId.current}
       data-placeholder={props.placeholder}
     />
   )
+
+  function onBlur() {
+    setFocused(false)
+  }
 
   function onFocus() {
     setFocused(true)
@@ -133,12 +136,16 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function handleSelectionChange(evt) {
-    if (focused) {
+    console.log('handling selection change')
+    if (isFocused()) {
+      console.log('is focused')
       const selection = window.getSelection()
       if (selection.rangeCount > 0) {
+        console.log('setting selection')
         selectionRangeBeforeBlurRef.current = window.getSelection().getRangeAt(0)
       }
 
+      console.log('firing selection change')
       richTextContext.fireSelectionChanged()
     }
   }
@@ -161,6 +168,23 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     return html
   }
 })
+
+function useSynchronousFocusState() {
+  const focusedRef = useRef(null)
+  // To be able to trigger a re-render when the ref value changes synchronously
+  const [bool, setBool] = useState(false)
+
+  return {isFocused, setFocused}
+
+  function isFocused() {
+    return focusedRef.current
+  }
+
+  function setFocused(val) {
+    focusedRef.current = val
+    setBool(!bool)
+  }
+}
 
 RichTextEditor.defaultProps = {
   className: '',

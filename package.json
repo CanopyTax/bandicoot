@@ -1,6 +1,6 @@
 {
   "name": "bandicoot",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "React rich text editor",
   "main": "dist/bandicoot.umd.js",
   "module": "dist/bandicoot.esm.js",

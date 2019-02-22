@@ -80,7 +80,11 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       if (divRef.current && document.activeElement !== divRef.current && !divRef.current.contains(document.activeElement)) {
         divRef.current.focus()
         setFocused(true)
-        // We're using setTimeout because if we don't wait a tick of the event loop, the browser will tell us the old
+        // We are calling handleSelectionChange manually because calling divRef.current.focus() programatically does not trigger
+        // a focus event like it normally would if a user did it. And we need the bandicoot hooks to know that the selection has changed,
+        // which is done by calling fireSelectionChanged (which is what handleSelectionChange does).
+        //
+        // And we're using setTimeout because if we don't wait a tick of the event loop, the browser will tell us the old
         // command state from before we focused.
         setTimeout(handleSelectionChange)
       }
@@ -115,17 +119,13 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   return (
     <div
       contentEditable
-      onBlur={onBlur}
+      onBlur={() => setFocused(false)}
       onFocus={onFocus}
       ref={divRef}
       className={props.className + " bandicoot-id-" + bandicootId.current}
       data-placeholder={props.placeholder}
     />
   )
-
-  function onBlur() {
-    setFocused(false)
-  }
 
   function onFocus() {
     setFocused(true)
@@ -136,16 +136,12 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function handleSelectionChange(evt) {
-    console.log('handling selection change')
     if (isFocused()) {
-      console.log('is focused')
       const selection = window.getSelection()
       if (selection.rangeCount > 0) {
-        console.log('setting selection')
         selectionRangeBeforeBlurRef.current = window.getSelection().getRangeAt(0)
       }
 
-      console.log('firing selection change')
       richTextContext.fireSelectionChanged()
     }
   }
@@ -169,6 +165,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 })
 
+// This hook allows you to change the focused value synchronously instead of queuing it
+// up with a set state. This is necessary since the selectionchange listener depends on
+// the blur and focus listeners to update the state synchronously (before the selectionchange
+// listener is fired)
 function useSynchronousFocusState() {
   const focusedRef = useRef(null)
   // To be able to trigger a re-render when the ref value changes synchronously

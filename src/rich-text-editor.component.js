@@ -27,6 +27,21 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     }
   }
 
+  function interceptPaste (event) {
+    // https://developer.mozilla.org/en-US/docs/Web/Events/paste
+    event.preventDefault()
+    event.stopPropagation()
+    let paste = (window.clipboardData).getData('text');
+    paste = props.pasteFn(paste)
+  }
+
+  useEffect(() => {
+    if (props.pasteFn) {
+      divRef.current.addEventListener('paste', interceptPaste)
+      return divRef.current.removeEventListener('paste', interceptPaste)
+    }
+  }, [])
+
   function emptyEditor() {
     // do it with selection and execCommand so it can be undone with Ctrl Z
     const range = document.createRange()
@@ -191,5 +206,6 @@ RichTextEditor.defaultProps = {
   initialHTML: '',
   save: noop,
   placeholder: '',
-  placeholderColor: '#CFCFCF'
+  placeholderColor: '#CFCFCF',
+  pasteFn: null
 }

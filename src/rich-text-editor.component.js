@@ -32,7 +32,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     event.preventDefault()
     event.stopPropagation()
     let paste = (window.clipboardData).getData('text');
-    paste = props.pasteFn(paste)
+    let newPaste = props.pasteFn(paste)
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return false;
+    selection.getRangeAt(0).insertNode(document.createTextNode(newPaste));
   }
 
   useEffect(() => {

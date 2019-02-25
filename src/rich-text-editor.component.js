@@ -40,7 +40,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       divRef.current.addEventListener('paste', interceptPaste)
       return () => divRef.current.removeEventListener('paste', interceptPaste)
     }
-  }, [])
+  }, [props.pasteFn])
 
   function emptyEditor() {
     // do it with selection and execCommand so it can be undone with Ctrl Z

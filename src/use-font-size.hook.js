@@ -30,15 +30,18 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
 
       function selectionChanged() {
         const selection = window.getSelection()
-        let selectionNode = selection.getRangeAt(0).startContainer
-        if (selectionNode.nodeType !== 1) {
-          // we've got a text node or comment node or other type of node that's not an element
-          selectionNode = selectionNode.parentElement
-        }
-        const stringFontSize = window.getComputedStyle(selectionNode).fontSize
-        const newSize = stringFontSize
-        if (newSize !== fontSize) {
-          setFontSize(newSize)
+        // If there is no selection, we won't change the font size
+        if (selection.rangeCount > 0) {
+          let selectionNode = selection.getRangeAt(0).startContainer
+          if (selectionNode.nodeType !== 1) {
+            // we've got a text node or comment node or other type of node that's not an element
+            selectionNode = selectionNode.parentElement
+          }
+          const stringFontSize = window.getComputedStyle(selectionNode).fontSize
+          const newSize = stringFontSize
+          if (newSize !== fontSize) {
+            setFontSize(newSize)
+          }
         }
       }
     }, [fontSize, setFontSize])

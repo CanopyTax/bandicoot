@@ -38,7 +38,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useEffect(() => {
     if (props.pasteFn) {
       divRef.current.addEventListener('paste', interceptPaste)
-      return divRef.current.removeEventListener('paste', interceptPaste)
+      return () => divRef.current.removeEventListener('paste', interceptPaste)
     }
   }, [])
 

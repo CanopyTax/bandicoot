@@ -95,9 +95,15 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }, [isFocused()])
 
   useEffect(() => {
-    richTextContext.selectRangeFromBeforeBlur = () => {
+    richTextContext.selectRangeFromBeforeBlur = (options = {usePreviousRange: false}) => {
       if (divRef.current && document.activeElement !== divRef.current && !divRef.current.contains(document.activeElement)) {
-        divRef.current.focus()
+        if (options.usePreviousRange && selectionRangeBeforeBlurRef.current) {
+          const selection = window.getSelection()
+          selection.removeAllRanges()
+          selection.addRange(selectionRangeBeforeBlurRef.current)
+        } else {
+          divRef.current.focus()
+        }
         setFocused(true)
         // We are calling handleSelectionChange manually because calling divRef.current.focus() programatically does not trigger
         // a focus event like it normally would if a user did it. And we need the bandicoot hooks to know that the selection has changed,

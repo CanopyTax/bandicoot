@@ -13,7 +13,7 @@ export function useTextAsImage({processSerializedElement = noop} = defaultOption
 
   return {
     insertTextAsImage(text) {
-      richTextContext.selectRangeFromBeforeBlur()
+      richTextContext.selectRangeFromBeforeBlur({usePreviousRange: true})
       const url = textToUrl(text, getSelectedElement())
       performCommandWithValue(url)
       const imgElement = document.querySelector(`img[src="${url}"]`)

@@ -12,7 +12,6 @@ export function useDocumentExecCommand(commandName) {
     performCommandWithValue(value) {
       richTextContext.selectRangeFromBeforeBlur()
       const showDefaultUI = null
-
       document.execCommand(commandName, showDefaultUI, value)
     },
   }

@@ -14,8 +14,10 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
 
   return {
     currentlySelectedFontSize,
-    setSize(fontSize) {
-      const integerSize = fontSizes.findIndex(size => size === fontSize) + 1
+    setSize(fontSizeParam) {
+      const integerSize = fontSizeParam === fontSize
+        ? fontSizes.length + 1
+        : fontSizes.findIndex(size => size === fontSizeParam) + 1
       if (integerSize <= 0) {
         throw Error(`Cannot set font size since '${fontSize}' was not passed in the fontSizes array`)
       }
@@ -48,9 +50,10 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
 
   function useSizeOverrides() {
     useEffect(() => {
+      const defaultStyle = ` font[size="${fontSizes.length + 1}"] {font-size: ${fontSize}}`
       const cssString = fontSizes.reduce((acc, style, index) => {
         return `${acc} font[size="${index + 1}"] {font-size: ${style}}`
-      }, '')
+      }, '').concat(defaultStyle)
 
       const styleEl = document.createElement('style')
       styleEl.textContent = cssString
@@ -68,7 +71,7 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
         for (let i = 0; i < fontEls.length; i++) {
           const fontEl = fontEls[i]
           const integerSize = Number(fontEl.getAttribute('size'))
-          if (integerSize > fontSizes.length) {
+          if (integerSize > fontSizes.length + 1) {
             throw Error(`Cannot find fontSize for integer size '${integerSize}'`)
           }
           const size = fontSizes[integerSize - 1]

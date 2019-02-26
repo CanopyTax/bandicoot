@@ -1,8 +1,9 @@
 import {useContext} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
-export function useDocumentExecWithFormatBlock(commandName) {
+export function useDocumentExecWithFormatBlock() {
   const richTextContext = useContext(RichTextContext)
+  const commandName = 'formatBlock'
 
   return {
     performCommandWithFormatBlock(value) {

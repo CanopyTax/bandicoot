@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from 'react'
+import {useContext} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
 export function useDocumentExecWithFormatBlock(commandName) {

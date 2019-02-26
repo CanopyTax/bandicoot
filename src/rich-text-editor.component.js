@@ -27,6 +27,25 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     }
   }
 
+  function interceptPaste (event) {
+    // https://developer.mozilla.org/en-US/docs/Web/Events/paste
+    event.preventDefault()
+    event.stopPropagation()
+    let paste = (window.clipboardData || event.clipboardData).getData('text/html');
+    let newPaste = props.pasteFn(paste)
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return false;
+    const pasteToDOMNode = document.createRange().createContextualFragment(newPaste)
+    selection.getRangeAt(0).insertNode(pasteToDOMNode);
+  }
+
+  useEffect(() => {
+    if (props.pasteFn) {
+      divRef.current.addEventListener('paste', interceptPaste)
+      return () => divRef.current.removeEventListener('paste', interceptPaste)
+    }
+  }, [props.pasteFn])
+
   function emptyEditor() {
     // do it with selection and execCommand so it can be undone with Ctrl Z
     const range = document.createRange()
@@ -191,5 +210,6 @@ RichTextEditor.defaultProps = {
   initialHTML: '',
   save: noop,
   placeholder: '',
-  placeholderColor: '#CFCFCF'
+  placeholderColor: '#CFCFCF',
+  pasteFn: null
 }

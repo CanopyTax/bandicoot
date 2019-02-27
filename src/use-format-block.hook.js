@@ -1,4 +1,3 @@
-import {useContext} from 'react'
 import {useDocumentExecCommand} from './use-document-exec-command.hook'
 
 export function useFormatBlock() {

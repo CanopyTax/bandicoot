@@ -1,6 +1,7 @@
 export {RichTextEditor} from './rich-text-editor.component.js'
 export {RichTextContainer, RichTextContext} from './rich-text-container.component.js'
 export {useDocumentExecCommand} from './use-document-exec-command.hook.js'
+export {useFormatBlock} from './use-format-block.hook'
 export {useDocumentQueryCommandState} from './use-document-query-command-state.hook.js'
 export {useFontSize} from './use-font-size.hook.js'
 export {useImage} from './use-image.hook.js'

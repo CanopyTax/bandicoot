@@ -36,7 +36,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     const selection = window.getSelection();
     if (!selection.rangeCount) return false;
     const pasteToDOMNode = document.createRange().createContextualFragment(newPaste)
-    selection.getRangeAt(0).insertNode(pasteToDOMNode);
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(pasteToDOMNode)
   }
 
   useEffect(() => {

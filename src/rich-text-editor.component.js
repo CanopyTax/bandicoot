@@ -31,13 +31,13 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     // https://developer.mozilla.org/en-US/docs/Web/Events/paste
     event.preventDefault()
     event.stopPropagation()
-    let paste = (window.clipboardData || event.clipboardData).getData('text/html');
+    let paste = (window.clipboardData || event.clipboardData).getData('text/html')
     let newPaste = props.pasteFn(paste)
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return false;
+    const selection = window.getSelection()
+    if (!selection.rangeCount) return false
     const pasteToDOMNode = document.createRange().createContextualFragment(newPaste)
-    const range = selection.getRangeAt(0);
-    range.deleteContents();
+    const range = selection.getRangeAt(0)
+    range.deleteContents()
     range.insertNode(pasteToDOMNode)
   }
 

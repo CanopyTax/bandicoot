@@ -3,7 +3,7 @@ import {RichTextContext} from './rich-text-container.component.js'
 
 const defaultActiveInfo = {isActive: false, value: false}
 
-export function useDocumentQueryCommandState(commandName) {
+export function useDocumentQueryCommandState(commandName, activeValueMatch) {
   const [activeInfo, setActiveInfo] = useState(defaultActiveInfo)
   const richTextContext = useContext(RichTextContext)
 
@@ -18,8 +18,9 @@ export function useDocumentQueryCommandState(commandName) {
   }, [activeInfo, setActiveInfo])
 
   function recheckActive() {
-    const isActuallyActive = document.queryCommandState(commandName)
     const actualActiveValue = document.queryCommandValue(commandName)
+    const isActuallyActive = activeValueMatch ? activeValueMatch === actualActiveValue : document.queryCommandState(commandName)
+
     if (isActuallyActive !== activeInfo.isActive || actualActiveValue !== activeInfo.value) {
       setActiveInfo({
         isActive: isActuallyActive,

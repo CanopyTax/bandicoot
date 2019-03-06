@@ -23,7 +23,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       resetEditor() {
         editorRef.current.setHTML('')
       },
-      getHTML: serialize
+      getHTML: serialize,
+      focus() {
+        divRef.current.focus()
+      },
     }
   }
 

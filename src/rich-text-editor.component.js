@@ -26,6 +26,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       getHTML: serialize,
       focus() {
         divRef.current.focus()
+        setFocused(true)
       },
     }
   }

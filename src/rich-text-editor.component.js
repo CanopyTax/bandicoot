@@ -37,12 +37,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     event.stopPropagation()
     let paste = (window.clipboardData || event.clipboardData).getData('text/html')
     let newPaste = props.pasteFn(paste)
-    const selection = window.getSelection()
-    if (!selection.rangeCount) return false
-    const pasteToDOMNode = document.createRange().createContextualFragment(newPaste)
-    const range = selection.getRangeAt(0)
-    range.deleteContents()
-    range.insertNode(pasteToDOMNode)
+    if (newPaste !== false) {
+      document.execCommand('insertHTML', null, newPaste)
+    }
   }
 
   useEffect(() => {

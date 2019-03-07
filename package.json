@@ -10,7 +10,7 @@
   "scripts": {
     "build": "rimraf dist && rollup -c",
     "watch": "rollup -c --watch",
-    "prepublish": "yarn build"
+    "prepublish": "in-publish && yarn build || not-in-publish"
   },
   "browserslist": [
     "extends browserslist-config-canopy"
@@ -25,6 +25,7 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "browserslist-config-canopy": "^2.0.0",
+    "in-publish": "^2.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "rimraf": "^2.6.3",

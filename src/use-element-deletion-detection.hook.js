@@ -1,5 +1,5 @@
 import {useContext, useEffect} from 'react'
-import {RichTextContext} from './bandicoot.js'
+import {RichTextContext} from './rich-text-container.component'
 
 export function useElementDeletionDetection(domElement, cbk) {
   const richTextContext = useContext(RichTextContext)

@@ -129,7 +129,6 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useEffect(() => {
     if (props.initialHTML) {
       divRef.current.innerHTML = props.initialHTML
-      richTextContext.fireNewHTML()
     }
   }, [])
 

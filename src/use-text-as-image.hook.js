@@ -3,9 +3,9 @@ import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
-const defaultOptions = {processSerializedElement: noop}
+const defaultOptions = {processSerializedElement: noop, fontFamily: null}
 
-export function useTextAsImage({processSerializedElement = noop} = defaultOptions) {
+export function useTextAsImage({processSerializedElement = noop, fontFamily = null} = defaultOptions) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
   useNewHtmlHandler()
@@ -14,7 +14,7 @@ export function useTextAsImage({processSerializedElement = noop} = defaultOption
   return {
     insertTextAsImage(text) {
       richTextContext.selectRangeFromBeforeBlur({usePreviousRange: true})
-      const url = textToUrl(text, getSelectedElement())
+      const url = textToUrl(text, getSelectedElement(), fontFamily)
       performCommandWithValue(url)
       const imgElement = document.querySelector(`img[src="${url}"]`)
       processImgElement(imgElement, text)
@@ -30,7 +30,7 @@ export function useTextAsImage({processSerializedElement = noop} = defaultOption
         const spanEls = richTextContext.getContentEditableElement().querySelectorAll('span[data-text-as-image]')
         for (let i = 0; i < spanEls.length; i++) {
           const spanEl = spanEls[i]
-          const url = textToUrl(spanEl.dataset.textAsImage, spanEl.previousElementSibling || spanEl.nextElementSibling || spanEl.parentElement)
+          const url = textToUrl(spanEl.dataset.textAsImage, spanEl.previousElementSibling || spanEl.nextElementSibling || spanEl.parentElement, fontFamily)
           const imgEl = document.createElement('img')
           imgEl.src = url
           processImgElement(imgEl, spanEl.dataset.textAsImage)
@@ -60,11 +60,11 @@ export function useTextAsImage({processSerializedElement = noop} = defaultOption
   }
 }
 
-function textToUrl(text, referenceEl) {
+function textToUrl(text, referenceEl, fontFamily) {
   const computedStyle = window.getComputedStyle(referenceEl)
   const currentFontSize = Number(computedStyle.fontSize.replace('px', ''))
   const currentLineHeight = Number(computedStyle.lineHeight.replace('px', ''))
-  const currentFontFamily = computedStyle.fontFamily
+  const currentFontFamily = fontFamily || computedStyle.fontFamily
   const font = `bold ${currentFontSize}px ${currentFontFamily}`
 
   const testDiv = document.createElement('div')

@@ -2,32 +2,25 @@ import React, {useState, useEffect, useRef, useContext, forwardRef} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
+const noopWithReturn = value => value;
 let globalBandicootId = 0
 
 export const RichTextEditor = forwardRef((props, editorRef) => {
+  const richTextContext = useContext(RichTextContext)
+  richTextContext.sanitizeHTML = props.sanitizeHTML;
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
   const {isFocused, setFocused} = useSynchronousFocusState()
-  const richTextContext = useContext(RichTextContext)
   const bandicootId = useRef(globalBandicootId++)
-  const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)
+  const [lastSavedHTML, setLastSavedHTML] = useState(richTextContext.sanitizeHTML(props.initialHTML))
+  const [hasSetInitialHTML, setHasSetInitialHTML] = useState(false);
 
   if (editorRef) {
     editorRef.current = {
-      setHTML(html) {
-        emptyEditor()
-        divRef.current.innerHTML = html
-        divRef.current.focus()
-        richTextContext.fireNewHTML()
-      },
-      resetEditor() {
-        editorRef.current.setHTML('')
-      },
-      getHTML: serialize,
-      focus() {
-        divRef.current.focus()
-        setFocused(true)
-      },
+      setHTML,
+      resetEditor,
+      getHTML,
+      focus,
     }
   }
 
@@ -35,7 +28,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     // https://developer.mozilla.org/en-US/docs/Web/Events/paste
     event.preventDefault()
     event.stopPropagation()
-    let paste = (window.clipboardData || event.clipboardData).getData('text/html')
+    let paste = richTextContext.sanitizeHTML((window.clipboardData || event.clipboardData).getData('text/html'))
     let newPaste = props.pasteFn(paste)
     if (newPaste !== false) {
       document.execCommand('insertHTML', null, newPaste)
@@ -43,10 +36,8 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   useEffect(() => {
-    if (props.pasteFn) {
-      divRef.current.addEventListener('paste', interceptPaste)
-      return () => divRef.current.removeEventListener('paste', interceptPaste)
-    }
+    divRef.current.addEventListener('paste', interceptPaste)
+    return () => divRef.current.removeEventListener('paste', interceptPaste)
   }, [props.pasteFn])
 
   function emptyEditor() {
@@ -128,11 +119,12 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   })
 
   useEffect(() => {
-    if (props.initialHTML) {
-      divRef.current.innerHTML = props.initialHTML
+    if (!hasSetInitialHTML && props.initialHTML) {
+      setHasSetInitialHTML(true);
+      setHTML(props.initialHTML)
       richTextContext.fireNewHTML()
     }
-  }, [])
+  }, [hasSetInitialHTML, setHTML, richTextContext])
 
   useEffect(() => {
     if (props.placeholder) {
@@ -143,7 +135,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       return () => styleElement.parentNode.removeChild(styleElement)
     }
   },[props.placeholder, props.placeholderColor, bandicootId.current])
-
+  
   return (
     <div
       contentEditable
@@ -176,7 +168,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function save() {
-    const html = serialize()
+    const html = getHTML()
     if (html !== lastSavedHTML) {
       setLastSavedHTML(html)
       props.save(html)
@@ -191,6 +183,26 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     }
 
     return html
+  }
+
+  function setHTML(html) {
+    emptyEditor()
+    divRef.current.innerHTML = richTextContext.sanitizeHTML(html)
+    focus()
+    richTextContext.fireNewHTML()
+  }
+
+  function resetEditor() {
+    setHTML('')
+  }
+
+  function getHTML() {
+    return richTextContext.sanitizeHTML(serialize())
+  }
+
+  function focus() {
+    divRef.current.focus()
+    setFocused(true)
   }
 })
 
@@ -221,5 +233,6 @@ RichTextEditor.defaultProps = {
   save: noop,
   placeholder: '',
   placeholderColor: '#CFCFCF',
-  pasteFn: null
+  pasteFn: noopWithReturn,
+  sanitizeHTML: noopWithReturn,
 }

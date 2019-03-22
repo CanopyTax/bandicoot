@@ -9,6 +9,14 @@ export function RichTextContainer(props) {
   const newHTMLListenersRef = useRef([])
   const serializers = useRef([])
 
+  useEffect(() => {
+    const contentEditableElement = contextValue.getContentEditableElement();
+
+    if (contentEditableElement && contentEditableElement.innerHTML) {
+      contextValue.fireNewHTML();
+    }
+  }, [contextValue])
+
   contextValue.addSelectionChangedListener = listener => {
     selectionChangedListenersRef.current.push(listener)
   }

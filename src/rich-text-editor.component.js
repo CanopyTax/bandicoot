@@ -120,16 +120,15 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   useEffect(() => {
     if (!hasSetInitialHTML && props.initialHTML) {
-      setHasSetInitialHTML(true);
+      setHasSetInitialHTML(true)
       setHTML(props.initialHTML)
-      richTextContext.fireNewHTML()
     }
   }, [hasSetInitialHTML, setHTML, richTextContext])
 
   useEffect(() => {
     if (props.placeholder) {
       const styleElement = document.createElement('style')
-      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:not(:focus):before { content: attr(data-placeholder); color: ${props.placeholderColor}; }`
+      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); color: ${props.placeholderColor}; }`
       document.head.appendChild(styleElement)
 
       return () => styleElement.parentNode.removeChild(styleElement)

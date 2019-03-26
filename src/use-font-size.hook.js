@@ -19,6 +19,7 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
       if (integerSize <= 0) {
         throw Error(`Cannot set font size since '${fontSize}' was not passed in the fontSizes array`)
       }
+      setFontSize(fontSize)
       performCommandWithValue(integerSize)
     },
   }

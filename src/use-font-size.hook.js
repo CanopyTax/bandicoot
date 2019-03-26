@@ -33,10 +33,11 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
       function selectionChanged() {
         const selection = window.getSelection()
         // If the selection has 'actually' changed (i.e. not just due to the editor bluring and focusing)
-        if (lastSelection === null
-          || !selection.anchorNode.isSameNode(lastSelection.anchorNode)
+        if (
+          !lastSelection
+          || selection.anchorNode !== lastSelection.anchorNode
           || selection.anchorOffset !== lastSelection.anchorOffset
-          || !selection.focusNode.isSameNode(lastSelection.focusNode)
+          || selection.focusNode !== lastSelection.focusNode
           || selection.focusOffset !== lastSelection.focusOffset
         ) {
           setLastSelection({

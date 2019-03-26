@@ -7,6 +7,7 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
     throw Error(`Browsers only support up to 7 font sizes with document.execCommand('fontSize', null, size)`)
   }
   const [fontSize, setFontSize] = useState(defaultFontSize)
+  const [lastSelection, setLastSelection] = useState(null)
   const {performCommandWithValue} = useDocumentExecCommand('fontSize')
   const richTextContext = useContext(RichTextContext)
   const currentlySelectedFontSize = useCurrentlySelectedFontSize()
@@ -19,6 +20,7 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
       if (integerSize <= 0) {
         throw Error(`Cannot set font size since '${fontSize}' was not passed in the fontSizes array`)
       }
+      setFontSize(fontSize)
       performCommandWithValue(integerSize)
     },
   }
@@ -30,21 +32,37 @@ export function useFontSize({defaultFontSize = '14px', fontSizes}) {
 
       function selectionChanged() {
         const selection = window.getSelection()
-        // If there is no selection, we won't change the font size
-        if (selection.rangeCount > 0) {
-          let selectionNode = selection.getRangeAt(0).startContainer
-          if (selectionNode.nodeType !== 1) {
-            // we've got a text node or comment node or other type of node that's not an element
-            selectionNode = selectionNode.parentElement
-          }
-          const stringFontSize = window.getComputedStyle(selectionNode).fontSize
-          const newSize = stringFontSize
-          if (newSize !== fontSize) {
-            setFontSize(newSize)
+        // If the selection has 'actually' changed (i.e. not just due to the editor bluring and focusing)
+        if (
+          !lastSelection
+          || selection.anchorNode !== lastSelection.anchorNode
+          || selection.anchorOffset !== lastSelection.anchorOffset
+          || selection.focusNode !== lastSelection.focusNode
+          || selection.focusOffset !== lastSelection.focusOffset
+        ) {
+          setLastSelection({
+            anchorNode: selection.anchorNode,
+            anchorOffset: selection.anchorOffset,
+            focusNode: selection.focusNode,
+            focusOffset: selection.focusOffset
+          })
+
+          // If there is no selection, we won't change the font size
+          if (selection.rangeCount > 0) {
+            let selectionNode = selection.getRangeAt(0).startContainer
+            if (selectionNode.nodeType !== 1) {
+              // we've got a text node or comment node or other type of node that's not an element
+              selectionNode = selectionNode.parentElement
+            }
+            const stringFontSize = window.getComputedStyle(selectionNode).fontSize
+            const newSize = stringFontSize
+            if (newSize !== fontSize) {
+              setFontSize(newSize)
+            }
           }
         }
       }
-    }, [fontSize, setFontSize])
+    }, [fontSize, setFontSize, lastSelection])
 
     return fontSize
   }

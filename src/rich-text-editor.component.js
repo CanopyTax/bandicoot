@@ -11,6 +11,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   const richTextContext = useContext(RichTextContext)
   const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(props.initialHTML)
+  const [lastSelectionAnchorNode, setLastSelectionAnchorNode] = useState(null)
+  const [lastSelectionAnchorOffset, setLastSelectionAnchorOffset] = useState(null)
+  const [lastSelectionFocusNode, setLastSelectionFocusNode] = useState(null)
+  const [lastSelectionFocusOffset, setLastSelectionFocusOffset] = useState(null)
 
   if (editorRef) {
     editorRef.current = {
@@ -166,11 +170,23 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   function handleSelectionChange(evt) {
     if (isFocused()) {
       const selection = window.getSelection()
-      if (selection.rangeCount > 0) {
-        selectionRangeBeforeBlurRef.current = window.getSelection().getRangeAt(0)
+      if (
+        !selection.anchorNode.isSameNode(lastSelectionAnchorNode)
+        || selection.anchorOffset !== lastSelectionAnchorOffset
+        || !selection.focusNode.isSameNode(lastSelectionFocusNode)
+        || selection.focusOffset !== lastSelectionFocusOffset
+      ) {
+        setLastSelectionAnchorNode(selection.anchorNode);
+        setLastSelectionAnchorOffset(selection.anchorOffset);
+        setLastSelectionFocusNode(selection.focusNode);
+        setLastSelectionFocusOffset(selection.focusOffset);
+        
+        if (selection.rangeCount > 0) {
+          selectionRangeBeforeBlurRef.current = window.getSelection().getRangeAt(0)
+        }
+  
+        richTextContext.fireSelectionChanged()
       }
-
-      richTextContext.fireSelectionChanged()
     }
   }
 

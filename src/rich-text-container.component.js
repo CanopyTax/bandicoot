@@ -83,6 +83,7 @@ const defaultContextValue = {
   addSerializer: noop,
   removeSerializer: noop,
   serialize: noop,
+  sanitizeHTML: noop,
 }
 
 export const RichTextContext = React.createContext(defaultContextValue)

@@ -13,7 +13,7 @@ export function useContentEditableFalse({processContentEditableFalseElement = no
   return {
     insertContentEditableFalseElement(innerHTML) {
       const id = "rte-ce-false-temp-id-" + tempId++
-      const htmlToInsert = `<span id="${id}">${innerHTML}</span>`
+      const htmlToInsert = `<span id="${id}">${richTextContext.sanitizeHTML(innerHTML, 'insertContentEditableFalseHTML')}</span>`
       performCommandWithValue(htmlToInsert)
       const contentEditableFalseElement = document.getElementById(id)
       handleContentEditableFalseElement(contentEditableFalseElement)

@@ -12,7 +12,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   const selectionRangeBeforeBlurRef = useRef(null)
   const {isFocused, setFocused} = useSynchronousFocusState()
   const bandicootId = useRef(globalBandicootId++)
-  const [lastSavedHTML, setLastSavedHTML] = useState(richTextContext.sanitizeHTML(props.initialHTML, 'setLastSavedHTML'))
+  const [lastSavedHTML, setLastSavedHTML] = useState(() => richTextContext.sanitizeHTML(props.initialHTML, 'initialSetLastSavedHTML'))
   const [hasSetInitialHTML, setHasSetInitialHTML] = useState(false);
 
   if (editorRef) {
@@ -28,7 +28,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     // https://developer.mozilla.org/en-US/docs/Web/Events/paste
     event.preventDefault()
     event.stopPropagation()
-    let paste = richTextContext.sanitizeHTML((window.clipboardData || event.clipboardData).getData('text/html'), 'pasteHTML')
+    let paste = richTextContext.sanitizeHTML((window.clipboardData || event.clipboardData).getData('text/plain'), 'pasteHTML')
     let newPaste = props.pasteFn(paste)
     if (newPaste !== false) {
       document.execCommand('insertHTML', null, newPaste)

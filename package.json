@@ -7,6 +7,12 @@
   "repository": "git@github.com:CanopyTax/bandicoot.git",
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "rich",
+    "text",
+    "editor"
+  ],
   "scripts": {
     "build": "rimraf dist && rollup -c",
     "watch": "rollup -c --watch",

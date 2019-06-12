@@ -142,7 +142,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       onFocus={onFocus}
       ref={divRef}
       className={props.className + " bandicoot-id-" + bandicootId.current}
-      style={{wordBreak: 'break-all'}}
+      style={{wordBreak: 'break-word', wordWrap: 'break-word', overflowWrap: 'break-word'}}
       data-placeholder={props.placeholder}
     />
   )

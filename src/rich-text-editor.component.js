@@ -134,6 +134,8 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       return () => styleElement.parentNode.removeChild(styleElement)
     }
   },[props.placeholder, props.placeholderColor, bandicootId.current])
+
+  const divStyles = props.style || {}
   
   return (
     <div
@@ -142,7 +144,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       onFocus={onFocus}
       ref={divRef}
       className={props.className + " bandicoot-id-" + bandicootId.current}
-      style={{wordBreak: 'break-word', wordWrap: 'break-word', overflowWrap: 'break-word'}}
+      style={{wordBreak: 'break-word', wordWrap: 'break-word', overflowWrap: 'break-word', ...divStyles}}
       data-placeholder={props.placeholder}
     />
   )

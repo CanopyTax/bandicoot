@@ -8,8 +8,10 @@
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "typings"
   ],
+  "types": "typings/bandicoot.d.ts",
   "keywords": [
     "react",
     "rich",
@@ -42,5 +44,7 @@
     "rollup-plugin-babel-minify": "^7.0.0",
     "rollup-plugin-node-resolve": "^4.0.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/react": "^16.8.23"
+  }
 }

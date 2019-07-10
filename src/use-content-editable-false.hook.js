@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import {useContext} from 'react'
 import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
@@ -18,18 +18,6 @@ export function useContentEditableFalse({processContentEditableFalseElement = no
       const contentEditableFalseElement = document.getElementById(id)
       handleContentEditableFalseElement(contentEditableFalseElement)
     }
-  }
-
-  function useNewHtmlHandler() {
-    useEffect(() => {
-      richTextContext.addNewHTMLListener(newHtml)
-      return () => richTextContext.removeNewHTMLListener(newHtml)
-
-      function newHtml() {
-        const contentEditableFalseElements = richTextContext.getContentEditableElement().querySelectorAll('[contenteditable="false"]')
-        contentEditableFalseElements.forEach(handleContentEditableFalseElement)
-      }
-    }, [])
   }
 
   function handleContentEditableFalseElement(contentEditableFalseElement) {

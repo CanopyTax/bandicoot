@@ -26,7 +26,7 @@ declare module "bandicoot" {
     style?: object;
     placeholder?: string;
     placeholderColor?: string;
-    ref: React.RefObject<HTMLElement>;
+    ref?: React.RefObject<HTMLElement>;
   }
 
   type RichTextContextValue = {

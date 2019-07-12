@@ -39,7 +39,7 @@ export function useLink({processAnchorElement = noop} = defaultOptions) {
   function insertLink(link, displayedText) {
     richTextContext.selectRangeFromBeforeBlur({usePreviousRange: true})
     const id = `rte-link-temp-id-${tempId++}`
-    performCommandWithValue(`<a href="${link}" id="${id}">${displayedText}</a>`)
+    performCommandWithValue(`<a href="${link}" id="${id}" target="_blank" rel="noopener noreferrer">${displayedText}</a>`)
     const anchorElement = document.getElementById(id)
     anchorElement.removeAttribute('id')
     processAnchorElement(anchorElement)

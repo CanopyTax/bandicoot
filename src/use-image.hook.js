@@ -58,7 +58,7 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
           fileBlobToUrl(fileInputElement.files[0], imgUrl => {
             performCommandWithValue(imgUrl)
             const imgElement = document.querySelector(`img[src="${imgUrl}"]`)
-            if (imgElement.src && imgElement.src.startsWith('blob')) {
+            if (imgElement.src && imgElement.src.startsWith('blob:')) {
               const reader = new FileReader()
               reader.addEventListener('load', () => {
                 dataUrls.current[imgElement.src] = reader.result

@@ -29,6 +29,7 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
 
   function handleImageElement(imgElement) {
     imgElement.style.cursor = 'pointer'
+    imgElement.style.maxWidth = '100%'
     processImgElement(imgElement)
   }
 

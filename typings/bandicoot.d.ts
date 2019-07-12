@@ -18,7 +18,7 @@ declare module "bandicoot" {
 
   type RichTextEditorProps = {
     initialHTML?: any;
-    save?(): any;
+    save?(html: string): any;
     sanitizeHTML?(html: string): string;
     pasteFn?(paste: string): string;
     unchangedInterval?: number;

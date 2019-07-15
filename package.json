@@ -21,7 +21,7 @@
   "scripts": {
     "build": "rimraf dist && rollup -c",
     "watch": "rollup -c --watch",
-    "prepare": "yarn build"
+    "prepublishOnly": "yarn build"
   },
   "browserslist": [
     "extends browserslist-config-canopy"

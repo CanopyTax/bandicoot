@@ -3,9 +3,14 @@ import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
-const defaultOpts = {processImgElement: noop, fileBlobToUrl: defaultFileBlobToUrl}
+const defaultAcceptImgTypes = '.jpg, .png, image/*'
+const defaultOpts = {
+  processImgElement: noop,
+  fileBlobToUrl: defaultFileBlobToUrl,
+  acceptImgTypes: defaultAcceptImgTypes,
+}
 
-export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileBlobToUrl} = defaultOpts) {
+export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileBlobToUrl, acceptImgTypes = defaultAcceptImgTypes} = defaultOpts) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
   const fileInputRef = useRef(null)
@@ -50,7 +55,7 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
       fileInputRef.current = document.createElement('input')
       const fileInputElement = fileInputRef.current
       fileInputElement.type = 'file'
-      fileInputElement.accept = '.jpg, .png, image/*'
+      fileInputElement.accept = acceptImgTypes
       fileInputElement.multiple = false
       fileInputElement.addEventListener('change', () => {
         if (fileInputElement.files && fileInputElement.files.length > 0) {
@@ -61,7 +66,7 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
           })
         }
       })
-    }, [fileBlobToUrl, processImgElement])
+    }, [fileBlobToUrl, processImgElement, acceptImgTypes])
   }
 }
 

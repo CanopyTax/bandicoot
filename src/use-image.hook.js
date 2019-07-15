@@ -14,8 +14,10 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
   const fileInputRef = useRef(null)
+  const dataUrls = React.useRef({})
   useNewHtmlHandler()
   useFileChooserInput()
+  useSerializer()
 
   return {
     chooseFile(evt) {
@@ -62,11 +64,33 @@ export function useImage({processImgElement = noop, fileBlobToUrl = defaultFileB
           fileBlobToUrl(fileInputElement.files[0], imgUrl => {
             performCommandWithValue(imgUrl)
             const imgElement = document.querySelector(`img[src="${imgUrl}"]`)
+            if (imgElement.src && imgElement.src.startsWith('blob:')) {
+              const reader = new FileReader()
+              reader.addEventListener('load', () => {
+                dataUrls.current[imgElement.src] = reader.result
+              })
+              reader.readAsDataURL(fileInputElement.files[0])
+            }
             handleImageElement(imgElement)
           })
         }
       })
     }, [fileBlobToUrl, processImgElement, acceptImgTypes])
+  }
+
+  function useSerializer() {
+    useEffect(() => {
+      richTextContext.addSerializer(serializer)
+      return () => richTextContext.removeSerializer(serializer)
+    })
+  }
+
+  function serializer(dom) {
+    dom.querySelectorAll('img').forEach(imgEl => {
+      if (dataUrls.current[imgEl.src]) {
+        imgEl.src = dataUrls.current[imgEl.src]
+      }
+    })
   }
 }
 

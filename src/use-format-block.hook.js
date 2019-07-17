@@ -5,7 +5,6 @@ export function useFormatBlock() {
 
   return {
     formatBlock(value) {
-      console.log(value, document.queryCommandValue('formatBlock'));
       if (value === document.queryCommandValue('formatBlock')) {
         if (!!window.chrome && isInHTMLList()) {
           removeHeader()
@@ -24,7 +23,6 @@ function isInHTMLList() {
   let containerNode = window.getSelection().getRangeAt(0).commonAncestorContainer
   let index = 0
   let isList = false
-  console.log(containerNode.parentNode)
   while(isList == false && index < 2) {
     if (containerNode.nodeType === Node.ELEMENT_NODE && containerNode.tagName === 'LI') {
       return true

@@ -20,16 +20,7 @@ export function useFormatBlock() {
 }
 
 function isInHTMLList() {
-  let containerNode = window.getSelection().getRangeAt(0).commonAncestorContainer
-  let index = 0
-  let isList = false
-  while(isList == false && index < 2) {
-    if (containerNode.nodeType === Node.ELEMENT_NODE && containerNode.tagName === 'LI') {
-      return true
-    }
-    containerNode = containerNode.parentNode
-    index++
-  }
+  return document.queryCommandState('insertOrderedList') || document.queryCommandState('insertUnorderedList')
 }
 
 function removeHeader() {

@@ -26,12 +26,12 @@ function isInHTMLList() {
 function removeHeader() {
   let nodeToBeRemoved = window.getSelection().getRangeAt(0).commonAncestorContainer
   let index = 0
-  while (nodeToBeRemoved.tagName !== 'H1' && index < 5) {
+  while (!['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(nodeToBeRemoved.tagName) && index < 5) {
     nodeToBeRemoved = nodeToBeRemoved.parentNode
     index ++
   }
-  if (index === 4) {
-    throw new Error(`The element does not appear to be wrapped by a header`)
+  if (index === 4) { // no header found, contradicting line 9 qcv check, hopefully never happens
+    performCommandWithValue('div')
   }
   while (nodeToBeRemoved.firstChild) {
     nodeToBeRemoved.parentNode.insertBefore(nodeToBeRemoved.firstChild, nodeToBeRemoved);

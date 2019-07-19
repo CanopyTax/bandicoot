@@ -6,7 +6,7 @@ export function useFormatBlock() {
   return {
     formatBlock(value) {
       if (value === document.queryCommandValue('formatBlock')) {
-        if (!!window.chrome && isInHTMLList()) {
+        if (!!window.chrome && isInHTMLList() && document.queryCommandValue('formatBlock').includes('h')) {
           removeHeader()
         }
         else {

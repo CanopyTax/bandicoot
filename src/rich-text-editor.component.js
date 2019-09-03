@@ -75,7 +75,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useEffect(() => {
     // Clicking on bandicoot richtext buttons triggers a blur event that will setFocus to false we want to delay the
     // save event that is triggered by blur events. 100ms is arbitrary. Whenever react rerenders the rich-text-editor
-    // due to focused state changing we need to either clear the blurTimeout to prevent a save action from firing 
+    // due to focused state changing we need to either clear the blurTimeout to prevent a save action from firing
     // (in the case of a quick refocus triggered by the rich text buttons) or fire a save event after waiting 100ms
     if (isFocused() === false) {
       const timeout = setTimeout(() => {
@@ -85,7 +85,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       return () => {
         clearTimeout(timeout)
       }
-    } 
+    }
   }, [isFocused()])
 
   useEffect(() => {
@@ -136,10 +136,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   },[props.placeholder, props.placeholderColor, bandicootId.current])
 
   const divStyles = props.style || {}
-  
+
   return (
     <div
-      contentEditable
+      contentEditable={!props.disabled}
       onBlur={() => setFocused(false)}
       onFocus={onFocus}
       ref={divRef}

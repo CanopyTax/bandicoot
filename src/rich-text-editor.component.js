@@ -137,8 +137,6 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   const divStyles = props.style || {}
 
-  console.log(props.disabled);
-
   return (
     <div
       contentEditable={!props.disabled}

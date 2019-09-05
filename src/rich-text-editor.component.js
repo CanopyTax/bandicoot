@@ -128,7 +128,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useEffect(() => {
     if (props.placeholder) {
       const styleElement = document.createElement('style')
-      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); color: ${props.placeholderColor}; }`
+      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); ${getBrowserDefaultStyling()} }`
       document.head.appendChild(styleElement)
 
       return () => styleElement.parentNode.removeChild(styleElement)
@@ -205,6 +205,16 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     divRef.current.focus()
     setFocused(true)
   }
+
+  function getBrowserDefaultStyling() {
+    if (props.placeholderColor) {
+      return `color: ${props.placeholderColor};`
+    } else if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
+      return `color: rgb(117, 117, 117);`
+    } else {
+      return `opacity: 0.54;`
+    }
+  }
 })
 
 // This hook allows you to change the focused value synchronously instead of queuing it
@@ -233,7 +243,6 @@ RichTextEditor.defaultProps = {
   initialHTML: '',
   save: noop,
   placeholder: '',
-  placeholderColor: '#CFCFCF',
   pasteFn: noopWithReturn,
   sanitizeHTML: noopWithReturn,
 }

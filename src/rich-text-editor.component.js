@@ -126,6 +126,12 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }, [hasSetInitialHTML, setHTML, richTextContext])
 
   useEffect(() => {
+    if (props.elToFocusAfterInitialSet) {
+      props.elToFocusAfterInitialSet.focus()
+    }
+  }, [props.elToFocusAfterInitialSet])
+
+  useEffect(() => {
     if (props.placeholder) {
       const styleElement = document.createElement('style')
       styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); ${getBrowserDefaultStyling()} }`

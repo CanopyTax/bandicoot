@@ -6,6 +6,9 @@ const noopWithReturn = value => value;
 let globalBandicootId = 0
 
 export const RichTextEditor = forwardRef((props, editorRef) => {
+  if (typeof props.sanitizeHTML !== "function") {
+    throw Error("RichTextEditor must be passed a sanitizeHTML function as a prop")
+  }
   const richTextContext = useContext(RichTextContext)
   richTextContext.sanitizeHTML = props.sanitizeHTML;
   const divRef = useRef(null)
@@ -244,5 +247,4 @@ RichTextEditor.defaultProps = {
   save: noop,
   placeholder: '',
   pasteFn: noopWithReturn,
-  sanitizeHTML: noopWithReturn,
 }

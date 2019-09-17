@@ -13,6 +13,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   richTextContext.sanitizeHTML = props.sanitizeHTML;
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
+  const initialMount = useRef(true)
   const {isFocused, setFocused} = useSynchronousFocusState()
   const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(() => richTextContext.sanitizeHTML(props.initialHTML, 'initialSetLastSavedHTML'))
@@ -190,9 +191,17 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function setHTML(html) {
-    emptyEditor()
-    divRef.current.innerHTML = richTextContext.sanitizeHTML(html, 'setHTML')
-    focus()
+    if(!initialMount.current) {
+      // both emptyEditor() and focus() result in unwanted autofocus on contentEditable on first render
+      // if the consumer wants autofocus, give us the prop
+      emptyEditor()
+      divRef.current.innerHTML = richTextContext.sanitizeHTML(html, 'setHTML')
+      focus()
+    } else {
+      initialMount.current = false
+      divRef.current.innerHTML = richTextContext.sanitizeHTML(html, 'setHTML')
+      if (props.autofocus) {focus()}
+    }
     richTextContext.fireNewHTML()
   }
 

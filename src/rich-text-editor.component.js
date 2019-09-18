@@ -13,7 +13,6 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   richTextContext.sanitizeHTML = props.sanitizeHTML;
   const divRef = useRef(null)
   const selectionRangeBeforeBlurRef = useRef(null)
-  const initialMount = useRef(true)
   const {isFocused, setFocused} = useSynchronousFocusState()
   const bandicootId = useRef(globalBandicootId++)
   const [lastSavedHTML, setLastSavedHTML] = useState(() => richTextContext.sanitizeHTML(props.initialHTML, 'initialSetLastSavedHTML'))
@@ -82,6 +81,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     // due to focused state changing we need to either clear the blurTimeout to prevent a save action from firing
     // (in the case of a quick refocus triggered by the rich text buttons) or fire a save event after waiting 100ms
     if (isFocused() === false) {
+      save()
       const timeout = setTimeout(() => {
         richTextContext.fireBlur()
         save()
@@ -124,9 +124,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   useEffect(() => {
     if (!hasSetInitialHTML && props.initialHTML) {
-      setHasSetInitialHTML(true)
       setHTML(props.initialHTML)
     }
+    setHasSetInitialHTML(true)
   }, [hasSetInitialHTML, setHTML, richTextContext])
 
   useEffect(() => {
@@ -191,16 +191,15 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function setHTML(html) {
-    if(!initialMount.current) {
-      // both emptyEditor() and focus() result in unwanted autofocus on contentEditable on first render
-      // if the consumer wants autofocus, give us the prop
+    // both emptyEditor() and focus() result in unwanted autofocus on contentEditable on first render
+    // if the consumer wants autofocus, give us the prop
+    if(hasSetInitialHTML) {
       emptyEditor()
       divRef.current.innerHTML = richTextContext.sanitizeHTML(html, 'setHTML')
       focus()
     } else {
-      initialMount.current = false
       divRef.current.innerHTML = richTextContext.sanitizeHTML(html, 'setHTML')
-      if (props.autofocus) {focus()}
+      if (props.autofocus) focus()
     }
     richTextContext.fireNewHTML()
   }

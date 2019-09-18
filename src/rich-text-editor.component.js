@@ -123,8 +123,8 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   useEffect(() => {
     if (!hasSetInitialHTML && props.initialHTML) {
-      setHTML(props.initialHTML, true)
       setHasSetInitialHTML(true)
+      setHTML(props.initialHTML, true)
     }
   }, [hasSetInitialHTML, setHTML, richTextContext])
 

@@ -123,9 +123,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   useEffect(() => {
     if (!hasSetInitialHTML && props.initialHTML) {
-      setHTML(props.initialHTML)
+      setHTML(props.initialHTML, true)
+      setHasSetInitialHTML(true)
     }
-    setHasSetInitialHTML(true)
   }, [hasSetInitialHTML, setHTML, richTextContext])
 
   useEffect(() => {
@@ -189,10 +189,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     return html
   }
 
-  function setHTML(html) {
+  function setHTML(html, isInitialMount) {
     // both emptyEditor() and focus() result in unwanted autofocus on contentEditable on first render
     // if the consumer wants autofocus, give us the prop
-    if(hasSetInitialHTML) {
+    if(!isInitialMount) {
       emptyEditor()
       divRef.current.innerHTML = richTextContext.sanitizeHTML(html, 'setHTML')
       focus()

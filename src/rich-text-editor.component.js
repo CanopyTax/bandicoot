@@ -198,7 +198,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       focus()
     } else {
       divRef.current.innerHTML = richTextContext.sanitizeHTML(html, 'setHTML')
-      if (props.autofocus) focus()
+      if (props.autoFocus) focus()
     }
     richTextContext.fireNewHTML()
   }

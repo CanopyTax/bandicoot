@@ -81,7 +81,6 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     // due to focused state changing we need to either clear the blurTimeout to prevent a save action from firing
     // (in the case of a quick refocus triggered by the rich text buttons) or fire a save event after waiting 100ms
     if (isFocused() === false) {
-      save()
       const timeout = setTimeout(() => {
         richTextContext.fireBlur()
         save()

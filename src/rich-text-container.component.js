@@ -59,6 +59,7 @@ export function RichTextContainer(props) {
   return (
     <RichTextContext.Provider value={contextValue}>
       {props.children}
+      <div style={{display: 'none'}}></div>
     </RichTextContext.Provider>
   )
 }

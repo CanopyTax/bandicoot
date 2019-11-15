@@ -1,10 +1,12 @@
 import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 import minify from 'rollup-plugin-babel-minify'
+import image from 'rollup-plugin-image'
 
 const config = {
   input: 'src/bandicoot.js',
   plugins: [
+    image(),
     resolve(),
     babel({exclude: 'nodeModules/**'}),
     minify({

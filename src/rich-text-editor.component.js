@@ -60,6 +60,17 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   })
 
   useEffect(() => {
+    if (divRef.current) {
+      let el = divRef.current
+      while (el.parentNode) {
+        el = el.parentNode;
+        if (el.tagName === 'SPAN')
+          console.warn('A span tag has been detected in the parents of <RichTextEditor>. This has been known to cause issues. https://github.com/CanopyTax/bandicoot/issues/69')
+      }
+    }
+  }, [divRef.current])
+
+  useEffect(() => {
     if (props.save && props.unchangedInterval && divRef.current && isFocused()) {
       const mutationConfig = {attributes: true, childList: true, subtree: true, characterData: true}
       let timeout

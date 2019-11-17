@@ -2,7 +2,7 @@ import React from 'react'
 import { useDocumentExecCommand } from '../use-document-exec-command.hook'
 import { useDocumentQueryCommandState } from '../use-document-query-command-state.hook'
 import IconButton from './icon-button.component'
-import BoldIcon from './bold-icon.component';
+import BoldIcon from './bold-icon.component'
 
 export function BoldButton(props) {
   const { performCommand } = useDocumentExecCommand('bold')
@@ -13,7 +13,7 @@ export function BoldButton(props) {
       onClick={performCommand}
       className={isActive ? 'active-control-button' : ''}
     >
-      <BoldIcon />
+      <BoldIcon {...props}/>
     </IconButton>
   )
 }

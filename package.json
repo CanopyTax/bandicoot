@@ -42,8 +42,8 @@
     "rollup": "^1.27.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-babel-minify": "^9.1.1",
-    "rollup-plugin-image": "^1.0.2",
-    "rollup-plugin-node-resolve": "^5.2.0"
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^2.0.3"
   },
   "dependencies": {
     "@types/react": "^16.9.11"

@@ -1,9 +1,7 @@
 import React from 'react'
 
 BoldIcon.defaultProps = {
-  style: {},
   width: 24,
-  className: '',
   height: 24,
 }
 

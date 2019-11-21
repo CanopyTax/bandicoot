@@ -11,7 +11,7 @@ export function BoldButton(props) {
   return (
     <IconButton
       onClick={performCommand}
-      className={isActive ? 'active-control-button' : ''}
+      isActive={isActive}
     >
       <BoldIcon {...props}/>
     </IconButton>

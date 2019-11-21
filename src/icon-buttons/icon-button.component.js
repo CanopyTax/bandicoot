@@ -6,7 +6,7 @@ export default function IconButton(props) {
   return (
     <button
       {...props}
-      className={`bandicoot-button-styling ${props.className}`}
+      className={`bandicoot-button-styling ${props.isActive ? 'active-control-button' : ''} ${props.className}`}
       onClick={props.onClick}
     >
       {props.children}

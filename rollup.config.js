@@ -11,10 +11,6 @@ const config = {
     minify({
       comments: false,
     }),
-    postcss({
-      extract: true,
-      modules: true,
-    }),
   ],
   external: [
     'react',

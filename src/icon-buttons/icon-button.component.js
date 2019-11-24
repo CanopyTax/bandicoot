@@ -1,12 +1,15 @@
 import React from 'react'
-import useAddButtonStyling from './use-add-button-styling.component'
+import style from './icon-button.css'
 
 export default function IconButton(props) {
-  useAddButtonStyling()
   return (
     <button
       {...props}
-      className={`bandicoot-button-styling ${props.isActive ? 'active-control-button' : ''} ${props.className}`}
+      className={`
+        ${style.bandicootButton}
+        ${props.isActive ? 'active-control-button' : ''}
+        ${props.className || ''}
+      `}
       onClick={props.onClick}
     >
       {props.children}

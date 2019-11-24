@@ -1,0 +1,12 @@
+  .bandicootButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+  }
+  .bandicootButton:hover {
+    transition: background-color .25s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .bandicootButton svg {
+    fill: currentColor;
+  }

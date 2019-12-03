@@ -9,3 +9,5 @@ export {useLink} from './use-link.hook.js'
 export {useContentEditableFalse} from './use-content-editable-false.hook.js'
 export {useTextAsImage} from './use-text-as-image.hook.js'
 export {useElementDeletionDetection} from './use-element-deletion-detection.hook.js'
+
+export { BoldButton } from './icon-buttons/bold-button.component'

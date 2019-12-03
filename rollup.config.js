@@ -1,6 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 import minify from 'rollup-plugin-babel-minify'
+import postcss from 'rollup-plugin-postcss'
 
 const config = {
   input: 'src/bandicoot.js',
@@ -10,6 +11,7 @@ const config = {
     minify({
       comments: false,
     }),
+    postcss({modules: true})
   ],
   external: [
     'react',

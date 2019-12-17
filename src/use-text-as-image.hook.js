@@ -94,20 +94,22 @@ function textToUrl(text, referenceEl, fontFamily) {
 function processImgElement(imgElement, text) {
   imgElement.style.verticalAlign = 'bottom'
   imgElement.dataset.textAsImage = text
-
-  imgElement.addEventListener('click', evt => {
-    const rect = imgElement.getBoundingClientRect()
-    const middlePoint = rect.left + rect.width / 2
-    const range = document.createRange()
-    if (evt.x < middlePoint) {
-      range.setStartBefore(imgElement)
-    } else {
-      range.setStartAfter(imgElement)
-    }
-    const selection = window.getSelection()
-    selection.removeAllRanges()
-    selection.addRange(range)
-  })
+  if (!imgElement.dataset.hasListener) {
+    imgElement.dataset.hasListener = true
+    imgElement.addEventListener('click', (evt) => {
+      const rect = imgElement.getBoundingClientRect()
+      const middlePoint = rect.left + rect.width / 2
+      const range = document.createRange()
+      if (evt.x < middlePoint) {
+        range.setStartBefore(imgElement)
+      } else {
+        range.setStartAfter(imgElement)
+      }
+      const selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(range)
+    })
+  }
 }
 
 function getSelectedElement() {

@@ -16,8 +16,10 @@ export function useTextAsImage({processSerializedElement = noop, fontFamily = nu
       richTextContext.selectRangeFromBeforeBlur({usePreviousRange: true})
       const url = textToUrl(text, getSelectedElement(), fontFamily)
       performCommandWithValue(url)
-      const imgElement = document.querySelector(`img[src="${url}"]`)
-      processImgElement(imgElement, text)
+      const imgElement = document.querySelectorAll(`img[src="${url}"]`)
+      for (let i = 0; i < imgElement.length; i++) {
+        processImgElement(imgElement[i], text)
+      }
     }
   }
 

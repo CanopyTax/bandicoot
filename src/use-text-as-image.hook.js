@@ -16,10 +16,8 @@ export function useTextAsImage({processSerializedElement = noop, fontFamily = nu
       richTextContext.selectRangeFromBeforeBlur({usePreviousRange: true})
       const url = textToUrl(text, getSelectedElement(), fontFamily)
       performCommandWithValue(url)
-      const imgElement = document.querySelectorAll(`img[src="${url}"]`)
-      for (let i = 0; i < imgElement.length; i++) {
-        processImgElement(imgElement[i], text)
-      }
+      const imgElement = document.querySelector(`img[src="${url}"]:not([data-text-as-image])`)
+      processImgElement(imgElement, text)
     }
   }
 
@@ -94,22 +92,20 @@ function textToUrl(text, referenceEl, fontFamily) {
 function processImgElement(imgElement, text) {
   imgElement.style.verticalAlign = 'bottom'
   imgElement.dataset.textAsImage = text
-  if (!imgElement.dataset.hasListener) {
-    imgElement.dataset.hasListener = true
-    imgElement.addEventListener('click', (evt) => {
-      const rect = imgElement.getBoundingClientRect()
-      const middlePoint = rect.left + rect.width / 2
-      const range = document.createRange()
-      if (evt.x < middlePoint) {
-        range.setStartBefore(imgElement)
-      } else {
-        range.setStartAfter(imgElement)
-      }
-      const selection = window.getSelection()
-      selection.removeAllRanges()
-      selection.addRange(range)
-    })
-  }
+  
+  imgElement.addEventListener('click', (evt) => {
+    const rect = imgElement.getBoundingClientRect()
+    const middlePoint = rect.left + rect.width / 2
+    const range = document.createRange()
+    if (evt.x < middlePoint) {
+      range.setStartBefore(imgElement)
+    } else {
+      range.setStartAfter(imgElement)
+    }
+    const selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
+  })
 }
 
 function getSelectedElement() {

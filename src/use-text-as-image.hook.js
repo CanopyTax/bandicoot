@@ -92,8 +92,8 @@ function textToUrl(text, referenceEl, fontFamily) {
 function processImgElement(imgElement, text) {
   imgElement.style.verticalAlign = 'bottom'
   imgElement.dataset.textAsImage = text
-  
-  imgElement.addEventListener('click', (evt) => {
+
+  imgElement.addEventListener('click', evt => {
     const rect = imgElement.getBoundingClientRect()
     const middlePoint = rect.left + rect.width / 2
     const range = document.createRange()

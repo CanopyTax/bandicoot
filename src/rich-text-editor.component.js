@@ -147,7 +147,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
       return () => styleElement.parentNode.removeChild(styleElement)
     }
-  },[props.placeholder, props.placeholderStyling, bandicootId.current])
+  },[props.placeholder, props.placeholderStyle, bandicootId.current])
 
   const divStyles = props.style || {}
 
@@ -228,8 +228,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function getBrowserDefaultStyling() {
-    if (props.placeholderStyling) {
-      return props.placeholderStyling
+    if (props.placeholderStyle) {
+      return Object.entries(props.placeholderStyle).reduce((styleString, [propName, propValue]) => {
+        return `${styleString}${propName.replace(/[A-Z]/g, match => `-${match.toLocaleLowerCase()}`)}:${propValue};`
+      }, '')
     } else if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
       return `color: rgb(117, 117, 117);`
     } else {

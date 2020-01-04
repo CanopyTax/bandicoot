@@ -25,7 +25,7 @@ declare module "bandicoot" {
     className?: string;
     style?: object;
     placeholder?: string;
-    placeholderStyling?: string;
+    placeholderStyle?: object;
     ref?: React.RefObject<HTMLElement>;
   }
 

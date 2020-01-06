@@ -148,8 +148,8 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       const styleSheet = Array.prototype.slice.call(document.styleSheets).find(s => s.ownerNode === styleElement)
       const styleDeclaration = styleSheet.cssRules[0].style
       const styles = props.placeholderStyle ? props.placeholderStyle : getDefaultPlaceholderStyles()
-      for (let propName in props.placeholderStyle) {
-        styleDeclaration[propName] = props.placeholderStyle[propName]
+      for (let propName in styles) {
+        styleDeclaration[propName] = props.placeholderStyle ? props.placeholderStyle[propName] : styles[propName]
       }
 
       return () => styleElement.parentNode.removeChild(styleElement)
@@ -236,9 +236,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   function getDefaultPlaceholderStyles() {
     if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
-      return `color: rgb(117, 117, 117);`
+      return {color: 'rgb(117, 117, 117)'} // default chrome style
     } else {
-      return `opacity: 0.54;`
+      return {opacity: '0.54'} // firefox
     }
   }
 })

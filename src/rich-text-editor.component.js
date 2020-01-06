@@ -147,6 +147,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
       const styleSheet = Array.prototype.slice.call(document.styleSheets).find(s => s.ownerNode === styleElement)
       const styleDeclaration = styleSheet.cssRules[0].style
+      const styles = props.placeholderStyle ? props.placeholderStyle : getDefaultPlaceholderStyles()
       for (let propName in props.placeholderStyle) {
         styleDeclaration[propName] = props.placeholderStyle[propName]
       }
@@ -231,6 +232,14 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   function focus() {
     divRef.current.focus()
     setFocused(true)
+  }
+
+  function getDefaultPlaceholderStyles() {
+    if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
+      return `color: rgb(117, 117, 117);`
+    } else {
+      return `opacity: 0.54;`
+    }
   }
 })
 

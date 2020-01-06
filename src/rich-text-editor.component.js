@@ -142,12 +142,18 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useEffect(() => {
     if (props.placeholder) {
       const styleElement = document.createElement('style')
-      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); ${getBrowserDefaultStyling()} }`
+      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); }`
       document.head.appendChild(styleElement)
+
+      const styleSheet = Array.prototype.slice.call(document.styleSheets).find(s => s.ownerNode === styleElement)
+      const styleDeclaration = styleSheet.cssRules[0].style
+      for (let propName in props.placeholderStyle) {
+        styleDeclaration[propName] = props.placeholderStyle[propName]
+      }
 
       return () => styleElement.parentNode.removeChild(styleElement)
     }
-  },[props.placeholder, props.placeholderStyle, bandicootId.current])
+  }, [props.placeholder, props.placeholderStyle, bandicootId.current])
 
   const divStyles = props.style || {}
 
@@ -225,18 +231,6 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   function focus() {
     divRef.current.focus()
     setFocused(true)
-  }
-
-  function getBrowserDefaultStyling() {
-    if (props.placeholderStyle) {
-      return Object.entries(props.placeholderStyle).reduce((styleString, [propName, propValue]) => {
-        return `${styleString}${propName.replace(/[A-Z]/g, match => `-${match.toLocaleLowerCase()}`)}:${propValue};`
-      }, '')
-    } else if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
-      return `color: rgb(117, 117, 117);`
-    } else {
-      return `opacity: 0.54;`
-    }
   }
 })
 

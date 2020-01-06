@@ -142,12 +142,19 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useEffect(() => {
     if (props.placeholder) {
       const styleElement = document.createElement('style')
-      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); ${getBrowserDefaultStyling()} }`
+      styleElement.textContent = `.bandicoot-id-${bandicootId.current}:empty:before { content: attr(data-placeholder); }`
       document.head.appendChild(styleElement)
+
+      const styleSheet = Array.prototype.slice.call(document.styleSheets).find(s => s.ownerNode === styleElement)
+      const styleDeclaration = styleSheet.cssRules[0].style
+      const styles = props.placeholderStyle ? props.placeholderStyle : getDefaultPlaceholderStyles()
+      for (let propName in styles) {
+        styleDeclaration[propName] = props.placeholderStyle ? props.placeholderStyle[propName] : styles[propName]
+      }
 
       return () => styleElement.parentNode.removeChild(styleElement)
     }
-  },[props.placeholder, props.placeholderColor, bandicootId.current])
+  }, [props.placeholder, props.placeholderStyle, bandicootId.current])
 
   const divStyles = props.style || {}
 
@@ -227,13 +234,11 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     setFocused(true)
   }
 
-  function getBrowserDefaultStyling() {
-    if (props.placeholderColor) {
-      return `color: ${props.placeholderColor};`
-    } else if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
-      return `color: rgb(117, 117, 117);`
+  function getDefaultPlaceholderStyles() {
+    if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
+      return {color: 'rgb(117, 117, 117)'} // default chrome style
     } else {
-      return `opacity: 0.54;`
+      return {opacity: '0.54'} // firefox
     }
   }
 })

@@ -19,11 +19,16 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   const [hasSetInitialHTML, setHasSetInitialHTML] = useState(false);
 
   if (editorRef) {
-    editorRef.current = {
+    const current = {
       setHTML,
       resetEditor,
       getHTML,
       focus,
+    };
+    if (editorRef instanceof Function) {
+      editorRef({ current });
+    } else {
+      editorRef.current = current;
     }
   }
 

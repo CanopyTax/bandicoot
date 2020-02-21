@@ -25,7 +25,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       getHTML,
       focus,
     };
-    if (editorRef instanceof Function) {
+    if (typeof editorRef === 'function') {
       editorRef({ current });
     } else {
       editorRef.current = current;

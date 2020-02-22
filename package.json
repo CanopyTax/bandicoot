@@ -5,6 +5,7 @@
   "main": "dist/bandicoot.umd.js",
   "module": "dist/bandicoot.esm.js",
   "repository": "git@github.com:CanopyTax/bandicoot.git",
+  "home": "https://github.com/CanopyTax/bandicoot",
   "author": "Joel Denning <joeldenning@gmail.com>",
   "license": "MIT",
   "files": [

@@ -3,9 +3,9 @@ import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
-const defaultOptions = {processSerializedElement: noop, fontFamily: null}
+const defaultOptions = {processSerializedElement: noop, fontFamily: null, fillStyle: '#00bf4b', fontWeight: 'bold', textTop: null, backgroundColor: 'transparent'}
 
-export function useTextAsImage({processSerializedElement = noop, fontFamily = null} = defaultOptions) {
+export function useTextAsImage({processSerializedElement = noop, fontFamily, fillStyle, fontWeight, textBottom, backgroundColor} = defaultOptions) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')
   const richTextContext = useContext(RichTextContext)
   useNewHtmlHandler()
@@ -14,10 +14,17 @@ export function useTextAsImage({processSerializedElement = noop, fontFamily = nu
   return {
     insertTextAsImage(text) {
       richTextContext.selectRangeFromBeforeBlur({usePreviousRange: true})
-      const url = textToUrl(text, getSelectedElement(), fontFamily)
+      const url = textToUrl({
+        text,
+        referenceEl: getSelectedElement(),
+        fontFamily,
+        fontWeight,
+        fillStyle,
+        textBottom,
+      })
       performCommandWithValue(url)
       const imgElement = document.querySelector(`img[src="${url}"]:not([data-text-as-image])`)
-      processImgElement(imgElement, text)
+      processImgElement(imgElement, text, backgroundColor)
     }
   }
 
@@ -30,14 +37,21 @@ export function useTextAsImage({processSerializedElement = noop, fontFamily = nu
         const spanEls = richTextContext.getContentEditableElement().querySelectorAll('span[data-text-as-image]')
         for (let i = 0; i < spanEls.length; i++) {
           const spanEl = spanEls[i]
-          const url = textToUrl(spanEl.dataset.textAsImage, spanEl.previousElementSibling || spanEl.nextElementSibling || spanEl.parentElement, fontFamily)
+          const url = textToUrl({
+            text: spanEl.dataset.textAsImage,
+            referenceEl: spanEl.previousElementSibling || spanEl.nextElementSibling || spanEl.parentElement,
+            fontFamily,
+            fontWeight,
+            fillStyle,
+            textBottom,
+          })
           const imgEl = document.createElement('img')
           imgEl.src = url
-          processImgElement(imgEl, spanEl.dataset.textAsImage)
+          processImgElement(imgEl, spanEl.dataset.textAsImage, backgroundColor)
           spanEl.parentNode.replaceChild(imgEl, spanEl)
         }
       }
-    }, [])
+    })
   }
 
   function useSerializer() {
@@ -60,12 +74,12 @@ export function useTextAsImage({processSerializedElement = noop, fontFamily = nu
   }
 }
 
-function textToUrl(text, referenceEl, fontFamily) {
+function textToUrl({text, referenceEl, fontFamily, fillStyle, fontWeight, textBottom}) {
   const computedStyle = window.getComputedStyle(referenceEl)
   const currentFontSize = Number(computedStyle.fontSize.replace('px', ''))
   const currentLineHeight = Number(computedStyle.lineHeight.replace('px', ''))
   const currentFontFamily = fontFamily || computedStyle.fontFamily
-  const font = `bold ${currentFontSize}px ${currentFontFamily}`
+  const font = `${fontWeight} ${currentFontSize}px ${currentFontFamily}`
 
   const testDiv = document.createElement('div')
   testDiv.style.font = font
@@ -80,18 +94,20 @@ function textToUrl(text, referenceEl, fontFamily) {
   canvas.height = currentLineHeight
   const c = canvas.getContext('2d')
   c.font = font
-  c.fillStyle = '#00bf4b'
+  c.fillStyle = fillStyle || defaultOptions.fillStyle
   c.textBaseline = 'bottom'
-  c.fillText(text, 0, currentLineHeight - 3)
+  const yPosition = textBottom || currentLineHeight - 3
+  c.fillText(text, 0, yPosition)
 
   document.body.removeChild(testDiv)
 
   return c.canvas.toDataURL()
 }
 
-function processImgElement(imgElement, text) {
+function processImgElement(imgElement, text, backgroundColor) {
   imgElement.style.verticalAlign = 'bottom'
   imgElement.dataset.textAsImage = text
+  imgElement.style.backgroundColor =  backgroundColor || defaultOptions.backgroundColor
 
   imgElement.addEventListener('click', evt => {
     const rect = imgElement.getBoundingClientRect()

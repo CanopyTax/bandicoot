@@ -3,7 +3,7 @@ import {useDocumentExecCommand} from './use-document-exec-command.hook.js'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
-const defaultOptions = {processSerializedElement: noop, fontFamily: null, fillStyle: '#00bf4b', fontWeight: 'bold', textTop: null, backgroundColor: 'transparent'}
+const defaultOptions = {processSerializedElement: noop, fontFamily: null, fillStyle: '#00bf4b', fontWeight: 'bold', textBottom: null, backgroundColor: 'transparent'}
 
 export function useTextAsImage({processSerializedElement = noop, fontFamily, fillStyle, fontWeight, textBottom, backgroundColor} = defaultOptions) {
   const {performCommandWithValue} = useDocumentExecCommand('insertImage')

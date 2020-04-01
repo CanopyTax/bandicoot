@@ -36,7 +36,9 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     // https://developer.mozilla.org/en-US/docs/Web/Events/paste
     event.preventDefault()
     event.stopPropagation()
-    let paste = richTextContext.sanitizeHTML((window.clipboardData || event.clipboardData).getData('text/html'), 'pasteHTML')
+    const clipboardData = event.clipboardData || window.clipboardData
+    const pasteData = clipboardData.getData('text/html') || clipboardData.getData('text')
+    let paste = richTextContext.sanitizeHTML(pasteData, 'pasteHTML')
     let newPaste = props.pasteFn(paste)
     if (newPaste !== false) {
       document.execCommand('insertHTML', null, newPaste)

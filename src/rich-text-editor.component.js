@@ -50,6 +50,13 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     return () => divRef.current.removeEventListener('paste', interceptPaste)
   }, [props.pasteFn])
 
+  useEffect(() => {
+    if (props.onInput) {
+      divRef.current.addEventListener('input', props.onInput)
+      return () => divRef.current.removeEventListener('input', props.onInput)
+    }
+  }, [props.onInput])
+
   function emptyEditor() {
     // do it with selection and execCommand so it can be undone with Ctrl Z
     const range = document.createRange()

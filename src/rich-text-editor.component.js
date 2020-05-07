@@ -170,7 +170,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       contentEditable={!props.disabled}
       onBlur={() => setFocused(false)}
       onFocus={onFocus}
-      onInput={props.onInput}
+      onInput={onInput}
       ref={divRef}
       className={props.className + " bandicoot-id-" + bandicootId.current}
       style={{wordBreak: 'break-word', wordWrap: 'break-word', overflowWrap: 'break-word', ...divStyles}}
@@ -235,6 +235,10 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   function getHTML() {
     return richTextContext.sanitizeHTML(serialize(), 'getHTML')
+  }
+
+  function onInput() {
+    props.onInput && props.onInput(getHTML())
   }
 
   function focus() {

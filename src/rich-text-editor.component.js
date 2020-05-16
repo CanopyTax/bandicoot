@@ -52,13 +52,19 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
 
   function emptyEditor() {
     // do it with selection and execCommand so it can be undone with Ctrl Z
-    const range = document.createRange()
-    range.selectNodeContents(divRef.current)
+    setSelection()
+    document.execCommand('removeFormat')
+    document.execCommand('delete')
+  }
+
+  function setSelection(collapse) {
+    const range = document.createRange() // start and end of nodes
+    range.selectNodeContents(divRef.current) // setting the start and end nodes
+    collapse && range.collapse(false) // collapsed range starts and ends on the same point (the end for focus)
+    // make this the only range - FF allows multiple ranges
     const selection = window.getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
-    document.execCommand('removeFormat')
-    document.execCommand('delete')
   }
 
   useEffect(() => {
@@ -238,7 +244,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function focus() {
-    divRef.current.focus()
+    setSelection(true)
     setFocused(true)
   }
 

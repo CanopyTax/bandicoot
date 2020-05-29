@@ -37,11 +37,12 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     event.preventDefault()
     event.stopPropagation()
     const clipboardData = event.clipboardData || window.clipboardData
-    const pasteData = clipboardData.getData('text/html') || clipboardData.getData('text')
+    const isPlainText = !clipboardData.types.includes('text/html')
+    const pasteData = clipboardData.getData(isPlainText ? 'text' : 'text/html')
     let paste = richTextContext.sanitizeHTML(pasteData, 'pasteHTML')
     let newPaste = props.pasteFn(paste)
     if (newPaste !== false) {
-      document.execCommand('insertHTML', null, newPaste)
+      document.execCommand(isPlainText ? 'insertText' : 'insertHTML', null, newPaste)
     }
   }
 

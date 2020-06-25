@@ -182,6 +182,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       className={props.className + " bandicoot-id-" + bandicootId.current}
       style={{wordBreak: 'break-word', wordWrap: 'break-word', overflowWrap: 'break-word', ...divStyles}}
       data-placeholder={props.placeholder}
+      tabIndex={props.tabIndex}
     />
   )
 

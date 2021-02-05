@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useContext, forwardRef} from 'react'
+import React, {useState, useEffect, useRef, useContext, forwardRef, useLayoutEffect} from 'react'
 import {RichTextContext} from './rich-text-container.component.js'
 
 const noop = () => {}
@@ -46,7 +46,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     divRef.current.addEventListener('paste', interceptPaste)
     return () => divRef.current.removeEventListener('paste', interceptPaste)
   }, [props.pasteFn])
@@ -68,7 +68,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
     selection.addRange(range)
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.addEventListener('selectionchange', handleSelectionChange)
     return () => document.removeEventListener('selectionchange', handleSelectionChange)
   })

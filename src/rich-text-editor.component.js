@@ -160,10 +160,12 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
       document.head.appendChild(styleElement)
 
       const styleSheet = Array.prototype.slice.call(document.styleSheets).find(s => s.ownerNode === styleElement)
-      const styleDeclaration = styleSheet.cssRules[0].style
-      const styles = props.placeholderStyle ? props.placeholderStyle : getDefaultPlaceholderStyles()
-      for (let propName in styles) {
-        styleDeclaration[propName] = props.placeholderStyle ? props.placeholderStyle[propName] : styles[propName]
+      if (styleSheet) {
+        const styleDeclaration = styleSheet.cssRules[0].style
+        const styles = props.placeholderStyle ? props.placeholderStyle : getDefaultPlaceholderStyles()
+        for (let propName in styles) {
+          styleDeclaration[propName] = props.placeholderStyle ? props.placeholderStyle[propName] : styles[propName]
+        }
       }
 
       return () => styleElement.parentNode.removeChild(styleElement)

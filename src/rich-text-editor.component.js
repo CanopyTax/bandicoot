@@ -71,7 +71,7 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   useLayoutEffect(() => {
     document.addEventListener('selectionchange', handleSelectionChange)
     return () => document.removeEventListener('selectionchange', handleSelectionChange)
-  }, [])
+  }, [richTextContext.fireSelectionChanged, isFocused()])
 
   useEffect(() => {
     if (divRef.current) {

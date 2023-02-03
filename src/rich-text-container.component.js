@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react'
+import React, {useRef, useEffect, useCallback} from 'react'
 
 export function RichTextContainer(props) {
   const contextValueRef = useRef(Object.assign({}, defaultContextValue))
@@ -17,44 +17,46 @@ export function RichTextContainer(props) {
     }
   }, [contextValue])
 
-  contextValue.addSelectionChangedListener = listener => {
+  contextValue.addSelectionChangedListener = useCallback((listener) => {
     selectionChangedListenersRef.current.push(listener)
-  }
-  contextValue.removeSelectionChangedListener = listener => {
+  }, [])
+  contextValue.removeSelectionChangedListener = useCallback((listener) => {
     selectionChangedListenersRef.current = selectionChangedListenersRef.current.filter(l => l !== listener)
-  }
-  contextValue.fireSelectionChanged = () => {
+  }, [])
+  contextValue.fireSelectionChanged = useCallback(() => {
     selectionChangedListenersRef.current.forEach(listener => listener())
-  }
-  contextValue.addBlurListener = listener => {
+  }, [])
+  contextValue.addBlurListener = useCallback((listener) => {
     blurListenersRef.current.push(listener)
-  }
-  contextValue.removeBlurListener = listener => {
+  }, [])
+  contextValue.removeBlurListener = useCallback((listener) => {
     blurListenersRef.current = blurListenersRef.current.filter(l => l !== listener)
-  }
-  contextValue.fireBlur = () => {
+  }, [])
+  contextValue.fireBlur = useCallback(() => {
     blurListenersRef.current.forEach(listener => listener())
-  }
-  contextValue.addNewHTMLListener = listener => {
+  }, [])
+  contextValue.addNewHTMLListener = useCallback((listener) => {
     newHTMLListenersRef.current.push(listener)
-  }
-  contextValue.removeNewHTMLListener = listener => {
+  }, [])
+  contextValue.removeNewHTMLListener = useCallback((listener) => {
     newHTMLListenersRef.current = newHTMLListenersRef.current.filter(l => l !== listener)
-  }
-  contextValue.fireNewHTML = () => {
+  }, [])
+  contextValue.fireNewHTML = useCallback(() => {
     newHTMLListenersRef.current.forEach(l => l())
-  }
-  contextValue.numSerializers = () => serializers.current.length
-  contextValue.addSerializer = serializer => {
+  }, [])
+  contextValue.numSerializers = useCallback(() => {
+    serializers.current.length
+  }, [])
+  contextValue.addSerializer = useCallback(serializer => {
     serializers.current.push(serializer)
-  }
-  contextValue.removeSerializer = serializer => {
+  }, [])
+  contextValue.removeSerializer = useCallback(serializer => {
     serializers.current = serializers.current.filter(s => s !== serializer)
-  }
-  contextValue.serialize = dom => {
+  }, [])
+  contextValue.serialize = useCallback(dom => {
     serializers.current.forEach(serializer => serializer(dom))
     return dom.innerHTML
-  }
+  }, [])
 
   return (
     <RichTextContext.Provider value={contextValue}>

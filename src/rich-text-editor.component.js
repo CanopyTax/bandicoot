@@ -217,8 +217,8 @@ export const RichTextEditor = forwardRef((props, editorRef) => {
   }
 
   function serialize() {
-    let html = divRef.current.innerHTML
-    if (richTextContext.numSerializers() > 0) {
+    let html = divRef?.current?.innerHTML || ''
+    if (html && richTextContext.numSerializers() > 0) {
       const dom = new DOMParser().parseFromString(html, 'text/html')
       html = richTextContext.serialize(dom.body)
     }

@@ -45,7 +45,7 @@ export function RichTextContainer(props) {
     newHTMLListenersRef.current.forEach(l => l())
   }, [])
   contextValue.numSerializers = useCallback(() => {
-    serializers.current.length
+    return serializers.current.length
   }, [])
   contextValue.addSerializer = useCallback(serializer => {
     serializers.current.push(serializer)

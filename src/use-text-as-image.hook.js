@@ -79,7 +79,7 @@ function textToUrl({text, referenceEl, fontFamily, fillStyle, fontWeight, textBo
   const currentFontSize = Number(computedStyle.fontSize.replace('px', ''))
   const currentLineHeight = Number(computedStyle.lineHeight.replace('px', ''))
   const currentFontFamily = fontFamily || computedStyle.fontFamily
-  const font = `${fontWeight} ${currentFontSize}px ${currentFontFamily}`
+  const font = `${fontWeight || "normal"} ${currentFontSize}px ${currentFontFamily}`
 
   const testDiv = document.createElement('div')
   testDiv.style.font = font

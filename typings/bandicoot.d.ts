@@ -27,6 +27,11 @@ declare module "bandicoot" {
     placeholder?: string;
     placeholderStyle?: object;
     ref?: React.RefObject<HTMLElement>;
+    disabled?: boolean;
+    onInput?: (evt: React.FormEvent<HTMLDivElement>) => void;
+    onKeyDown?: (evt: React.KeyboardEvent<HTMLDivElement>) => void;
+    tabIndex?: number;
+    autoFocus?: boolean;
   }
 
   type RichTextContextValue = {
